@@ -1,0 +1,19 @@
+<Files *.ini> 
+Order deny,allow 
+Deny from all 
+</Files>
+
+<Files *.json> 
+Order deny,allow 
+Deny from all 
+</Files>
+
+<Files *.log> 
+Order deny,allow 
+Deny from all 
+</Files>
+
+<Files *.sql> 
+Order deny,allow 
+Deny from all 
+</Files>
