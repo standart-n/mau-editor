@@ -6040,9 +6040,9 @@ a.badge:hover {
 
 .map-main {
   position: fixed;
-  top: 60px;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
+  top: 42px;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: #ccc;
 }

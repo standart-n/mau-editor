@@ -255,7 +255,7 @@ $(function() {
                 uuid: point.D$UUID.toString()
               }, {
                 balloonMinWidth: 350,
-                balloonMinHeight: 250,
+                balloonMinHeight: 200,
                 preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon'
               });
               placemarks[i].events.add('balloonopen', function(e) {
@@ -363,6 +363,9 @@ $(function() {
 
   $this = {
     getBalloonContent: function(point) {
+      return "<p>\n	<table class=\"table\">\n		<tr>\n			<td>Исполнитель:</td>\n			<td class=\"text-error\">" + point.SAGENT + "</td>\n		</tr>\n		<tr>\n			<td>Дата начала:</td>\n			<td class=\"text-error\">" + point.PERIOD_BEG + "</td>\n		</tr>\n		<tr>\n			<td>План. дата закр.:</td>\n			<td class=\"text-error\">" + point.PLAN_PERIOD_END + "</td>\n		</tr>\n	</table>\n</p>";
+    },
+    getBalloonContentEditor: function(point) {
       return "<form class=\"form-horizontal\">\n	<div class=\"control-group\">\n		<label class=\"control-label\">Исполнитель:</label>\n		<label class=\"control-label\">" + point.SAGENT + "</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Дата начала:</label>\n		<label class=\"control-label\">" + point.PERIOD_BEG + "</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">План дата закр.:</label>\n		<label class=\"control-label\">" + point.PLAN_PERIOD_END + "</label>\n	</div>\n</form>";
     }
   };

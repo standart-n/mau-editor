@@ -56,7 +56,7 @@ $ ->
 									# ширина балуна
 									balloonMinWidth:350
 									# высота балуна
-									balloonMinHeight:250
+									balloonMinHeight:200
 									# иконка метки
 									preset: if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
 								)

@@ -4,7 +4,30 @@ $ ->
 	$this =
 
 		# делаем запрос к серверу, чтобы взять содержимое балуна
+
 		getBalloonContent: (point) ->
+
+			"""
+				<p>
+					<table class="table">
+						<tr>
+							<td>Исполнитель:</td>
+							<td class="text-error">#{point.SAGENT}</td>
+						</tr>
+						<tr>
+							<td>Дата начала:</td>
+							<td class="text-error">#{point.PERIOD_BEG}</td>
+						</tr>
+						<tr>
+							<td>План. дата закр.:</td>
+							<td class="text-error">#{point.PLAN_PERIOD_END}</td>
+						</tr>
+					</table>
+				</p>
+			"""
+
+
+		getBalloonContentEditor: (point) ->
 
 			"""
 			<form class="form-horizontal">
