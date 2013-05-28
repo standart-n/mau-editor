@@ -7,14 +7,31 @@ function __construct() {
 	
 }
 
-public static function getPoints() {
+public static function getPoints($j=array()) {
 
 	if (query(sql::getPoints(),$m)) {
-		return $m;
+		for ($i=0;$i<sizeof($m);$i++) {
+			foreach ($m[$i] as $key => $value) {
+				$j[$i][$key] = toUTF($value);
+			}		
+		}
+		return $j;
 	}
 	return false;
 }
 
+public static function getBalloonContent($j=array()) {
+
+	if (query(sql::getBalloonContent(),$m)) {
+		for ($i=0;$i<sizeof($m);$i++) {
+			foreach ($m[$i] as $key => $value) {
+				$j[$i][$key] = toUTF($value);
+			}		
+		}
+		return $j[0];
+	}
+	return false;
+}
 
 
 

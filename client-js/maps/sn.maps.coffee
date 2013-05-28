@@ -2,18 +2,8 @@ $ ->
 
 	$this =
 		init: (options = {}) ->
-			_this = this
-			console.log 'maps' if console?
-			$(this).on 'click', (levels) ->
-				# if levels.one[1] is 'autoload'
-				# 	$(_this).snMaps 'autoload'
-					# switch levels.two
-					# 	when 'signin'
-					# 		$(_this).snSignin()
-					# 	when 'help'
-					# 		$(_this).snSignin 'help'
 
-		loadMap: () ->
+			_this = $(this)
 
 			# ждем когда загрузятся яндекс.карты
 			ymaps.ready () ->
@@ -32,7 +22,7 @@ $ ->
 				map.controls.add 'mapTools'
 
 				# берем с сервера точки и выводим их
-				$this.getPoints (points) ->
+				$(_this).snMapsAjax 'getPoints', (points) ->
 
 					clusterer = new ymaps.Clusterer()			# создаем кластер
 					placemarks = []								# массив меток
@@ -56,25 +46,39 @@ $ ->
 									# заголовок подсказки на метке
 									hintContent: if point.PLAN_PERIOD_END? then "до <b>#{point.PLAN_PERIOD_END.toString()}</b>"
 									# заголовок балуна
-									balloonContentHeader: 'Перекоп'
+									balloonContentHeader: "<div class=\"balloonContentHeader\" data-id=\"#{point.D$UUID}\">#{point.SVID}</div>"
 									# содержимое балуна
-									balloonContentBody: "<div id=\"#{point.D$UUID}\"></div>"
+									balloonContentBody: "<div class=\"balloonContentBody\" data-id=\"#{point.D$UUID}\"></div>"
+									# записываем uuid
+									uuid: point.D$UUID.toString()
 								)
 								(
 									# ширина балуна
-									balloonMinWidth:760
+									balloonMinWidth:350
 									# высота балуна
-									balloonMinHeight:320
+									balloonMinHeight:250
 									# иконка метки
 									preset: if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
 								)
 
+							placemarks[i].events.add 'balloonopen', (e) ->
 
-						#console.warn 'point', point.POINT if console?
-						#console.warn 'xy', coordinates if console?
-						console.warn 'vid_id', point.VID_ID if console?
+								placemark = e.get('target')
+								uuid = placemark.properties.get('uuid').toString()
+								
+								$(_this).snMapsAjax 'getBalloonContent', uuid, (balloon) ->
+									$('.balloonContentBody').each () ->
+										if uuid is balloon.D$UUID.toString()
+											$(this).html $(_this).snMapsBalloon('getBalloonContent', balloon)
 
-					console.warn 'placemarks', placemarks if console?
+
+
+						# console.warn 'point', point.POINT if console?
+						# console.warn 'xy', coordinates if console?
+						# console.warn 'vid_id', point.VID_ID if console?
+						# console.warn 'svid', point.SVID if console?
+
+					# console.warn 'placemarks', placemarks if console?
 
 					# заполняем кластер метками
 					clusterer.add placemarks
@@ -90,23 +94,6 @@ $ ->
 
 
 
-		# делаем запрос к серверу за точками
-		getPoints: (callback) ->
-
-			$.ajax 
-				url: 'index.php'
-				type:'GET'
-				data:
-					action: 'getPoints'
-				dataType: 'json'
-				success: (s) ->
-					console.info s if console?
-					if s.points?
-						callback(s.points) if callback?
-
-				
-				error: (XMLHttpRequest, textStatus, error) ->
-					console.log XMLHttpRequest, textStatus, error if console?
 
 
 	$.fn.snMaps = (sn = {}) ->
@@ -115,5 +102,4 @@ $ ->
 		else 
 			$this.init.apply @, arguments
 
-	$('#sn').snMaps()
 

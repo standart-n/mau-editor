@@ -17,6 +17,9 @@ public static function engine() {
 		case "getPoints":
 			return self::getPoints();
 		break;
+		case "getBalloonContent":
+			return self::getBalloonContent();
+		break;
 	}
 	return false;
 }
@@ -50,5 +53,19 @@ public static function getPoints($j=array()) {
 	// }
 	return $j;
 }
+
+public static function getBalloonContent($j=array()) {
+	// if (signin::check()) {
+		//if (editor::getStatus($status)) {
+			$j['signin']=true;
+			$j['content']=editor::getBalloonContent();
+			$j['tm']=time();
+		//}
+	// } else {
+	// 	$j['signin']=false;
+	// }
+	return $j;
+}
+
 
 } ?>

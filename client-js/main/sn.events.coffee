@@ -44,7 +44,7 @@ $ ->
 
 						when 'autoload'
 
-							$(this).snMaps 'loadMap'
+							$(this).snMaps()
 
 
 						

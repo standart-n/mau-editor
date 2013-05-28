@@ -149,7 +149,7 @@ $(function() {
         if ((levels.one != null) && levels.one[1] !== 'spoiler') {
           switch (levels.one[1]) {
             case 'autoload':
-              $(this).snMaps('loadMap');
+              $(this).snMaps();
               break;
             default:
               if ((levels.two != null) && (levels.three != null)) {
@@ -225,13 +225,7 @@ $(function() {
       if (options == null) {
         options = {};
       }
-      _this = this;
-      if (typeof console !== "undefined" && console !== null) {
-        console.log('maps');
-      }
-      return $(this).on('click', function(levels) {});
-    },
-    loadMap: function() {
+      _this = $(this);
       return ymaps.ready(function() {
         var map;
 
@@ -244,30 +238,40 @@ $(function() {
         map.controls.add('zoomControl');
         map.controls.add('typeSelector');
         map.controls.add('mapTools');
-        return $this.getPoints(function(points) {
+        return $(_this).snMapsAjax('getPoints', function(points) {
           var clusterer, coordinates, coords, i, placemarks, point;
 
           clusterer = new ymaps.Clusterer();
           placemarks = [];
           for (i in points) {
             point = points[i];
-            coords = point.POINT.toString().replace(/[\s\[\]]/g, '');
-            coordinates = [coords.replace(/^(.*)\,(.*)$/, '$1'), coords.replace(/^(.*)\,(.*)$/, '$2')];
-            placemarks[i] = new ymaps.Placemark(coordinates, {
-              hintContent: point.PLAN_PERIOD_END != null ? "до <b>" + (point.PLAN_PERIOD_END.toString()) + "</b>" : void 0,
-              balloonContentHeader: 'Перекоп',
-              balloonContentBody: "<div id=\"" + point.D$UUID + "\">" + point.D$UUID + "</div>"
-            }, {
-              balloonMinWidth: 760,
-              balloonMinHeight: 320,
-              preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon'
-            });
-            if (typeof console !== "undefined" && console !== null) {
-              console.warn('vid_id', point.VID_ID);
+            if (point.POINT != null) {
+              coords = point.POINT.toString().replace(/[\s\[\]]/g, '');
+              coordinates = [coords.replace(/^(.*)\,(.*)$/, '$1'), coords.replace(/^(.*)\,(.*)$/, '$2')];
+              placemarks[i] = new ymaps.Placemark(coordinates, {
+                hintContent: point.PLAN_PERIOD_END != null ? "до <b>" + (point.PLAN_PERIOD_END.toString()) + "</b>" : void 0,
+                balloonContentHeader: "<div class=\"balloonContentHeader\" data-id=\"" + point.D$UUID + "\">" + point.SVID + "</div>",
+                balloonContentBody: "<div class=\"balloonContentBody\" data-id=\"" + point.D$UUID + "\"></div>",
+                uuid: point.D$UUID.toString()
+              }, {
+                balloonMinWidth: 350,
+                balloonMinHeight: 250,
+                preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon'
+              });
+              placemarks[i].events.add('balloonopen', function(e) {
+                var placemark, uuid;
+
+                placemark = e.get('target');
+                uuid = placemark.properties.get('uuid').toString();
+                return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon) {
+                  return $('.balloonContentBody').each(function() {
+                    if (uuid === balloon.D$UUID.toString()) {
+                      return $(this).html($(_this).snMapsBalloon('getBalloonContent', balloon));
+                    }
+                  });
+                });
+              });
             }
-          }
-          if (typeof console !== "undefined" && console !== null) {
-            console.warn('placemarks', placemarks);
           }
           clusterer.add(placemarks);
           clusterer.options.set({
@@ -278,7 +282,24 @@ $(function() {
           return map.geoObjects.add(clusterer);
         });
       });
-    },
+    }
+  };
+  return $.fn.snMaps = function(sn) {
+    if (sn == null) {
+      sn = {};
+    }
+    if ($this[sn]) {
+      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
+    } else {
+      return $this.init.apply(this, arguments);
+    }
+  };
+});
+
+$(function() {
+  var $this;
+
+  $this = {
     getPoints: function(callback) {
       return $.ajax({
         url: 'index.php',
@@ -288,9 +309,6 @@ $(function() {
         },
         dataType: 'json',
         success: function(s) {
-          if (typeof console !== "undefined" && console !== null) {
-            console.info(s);
-          }
           if (s.points != null) {
             if (callback != null) {
               return callback(s.points);
@@ -303,17 +321,57 @@ $(function() {
           }
         }
       });
+    },
+    getBalloonContent: function(uuid, callback) {
+      if (uuid != null) {
+        return $.ajax({
+          url: 'index.php',
+          type: 'GET',
+          data: {
+            action: 'getBalloonContent',
+            uuid: uuid
+          },
+          dataType: 'json',
+          success: function(s) {
+            if (s.content != null) {
+              if (callback != null) {
+                return callback(s.content);
+              }
+            }
+          },
+          error: function(XMLHttpRequest, textStatus, error) {
+            if (typeof console !== "undefined" && console !== null) {
+              return console.log(XMLHttpRequest, textStatus, error);
+            }
+          }
+        });
+      }
     }
   };
-  $.fn.snMaps = function(sn) {
+  return $.fn.snMapsAjax = function(sn) {
     if (sn == null) {
       sn = {};
     }
     if ($this[sn]) {
       return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
-    } else {
-      return $this.init.apply(this, arguments);
     }
   };
-  return $('#sn').snMaps();
+});
+
+$(function() {
+  var $this;
+
+  $this = {
+    getBalloonContent: function(point) {
+      return "<form class=\"form-horizontal\">\n	<div class=\"control-group\">\n		<label class=\"control-label\">Исполнитель:</label>\n		<label class=\"control-label\">" + point.SAGENT + "</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Дата начала:</label>\n		<label class=\"control-label\">" + point.PERIOD_BEG + "</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">План дата закр.:</label>\n		<label class=\"control-label\">" + point.PLAN_PERIOD_END + "</label>\n	</div>\n</form>";
+    }
+  };
+  return $.fn.snMapsBalloon = function(sn) {
+    if (sn == null) {
+      sn = {};
+    }
+    if ($this[sn]) {
+      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+  };
 });

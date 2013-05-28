@@ -2,6 +2,7 @@
 	
 public static $region_id;
 public static $action;
+public static $uuid;
 public static $login;
 public static $password;
 public static $callback;
@@ -14,6 +15,10 @@ function __construct() {
 	}
 	if (isset($_REQUEST["callback"])) {
 		self::$callback=trim(strval($_REQUEST["callback"]));
+	}
+
+	if (isset($_REQUEST["uuid"])) {
+		self::$uuid=trim(strval($_REQUEST["uuid"]));
 	}
 
 	if (isset($_REQUEST["login"])) {
