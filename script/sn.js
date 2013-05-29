@@ -150,6 +150,7 @@ $(function() {
           switch (levels.one[1]) {
             case 'autoload':
               $(this).snMaps();
+              $(this).snUsers();
               break;
             default:
               if ((levels.two != null) && (levels.three != null)) {
@@ -234,7 +235,7 @@ $(function() {
           zoom: 12,
           behaviors: ['default', 'scrollZoom']
         });
-        map.options.set('scrollZoomSpeed', 1);
+        map.options.set('scrollZoomSpeed', 4);
         map.controls.add('zoomControl');
         map.controls.add('typeSelector');
         map.controls.add('mapTools');
@@ -263,12 +264,13 @@ $(function() {
 
                 placemark = e.get('target');
                 uuid = placemark.properties.get('uuid').toString();
-                return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon) {
-                  return $('.balloonContentBody').each(function() {
-                    if (uuid === balloon.D$UUID.toString()) {
-                      return $(this).html($(_this).snMapsBalloon('getBalloonContent', balloon));
-                    }
-                  });
+                return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon, signin) {
+                  if (signin) {
+                    placemark.options.set('balloonMinWidth', 500);
+                    return placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContentEditor', balloon));
+                  } else {
+                    return placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContent', balloon));
+                  }
                 });
               });
             }
@@ -323,19 +325,23 @@ $(function() {
       });
     },
     getBalloonContent: function(uuid, callback) {
+      var _ref, _ref1;
+
       if (uuid != null) {
         return $.ajax({
           url: 'index.php',
           type: 'GET',
           data: {
             action: 'getBalloonContent',
-            uuid: uuid
+            uuid: uuid,
+            login: ((_ref = window.user) != null ? _ref.login : void 0) != null ? window.user.login : "",
+            hash: ((_ref1 = window.user) != null ? _ref1.hash : void 0) != null ? window.user.hash : ""
           },
           dataType: 'json',
           success: function(s) {
-            if (s.content != null) {
+            if ((s.content != null) && (s.signin != null)) {
               if (callback != null) {
-                return callback(s.content);
+                return callback(s.content, s.signin);
               }
             }
           },
@@ -366,10 +372,146 @@ $(function() {
       return "<p>\n	<table class=\"table\">\n		<tr>\n			<td>Исполнитель:</td>\n			<td class=\"text-error\">" + point.SAGENT + "</td>\n		</tr>\n		<tr>\n			<td>Дата начала:</td>\n			<td class=\"text-error\">" + point.PERIOD_BEG + "</td>\n		</tr>\n		<tr>\n			<td>План. дата закр.:</td>\n			<td class=\"text-error\">" + point.PLAN_PERIOD_END + "</td>\n		</tr>\n	</table>\n</p>";
     },
     getBalloonContentEditor: function(point) {
-      return "<form class=\"form-horizontal\">\n	<div class=\"control-group\">\n		<label class=\"control-label\">Исполнитель:</label>\n		<label class=\"control-label\">" + point.SAGENT + "</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Дата начала:</label>\n		<label class=\"control-label\">" + point.PERIOD_BEG + "</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">План дата закр.:</label>\n		<label class=\"control-label\">" + point.PLAN_PERIOD_END + "</label>\n	</div>\n</form>";
+      return "<form class=\"form-horizontal\">\n	<div class=\"control-group\">\n		<label class=\"control-label\">Исполнитель:</label>\n		<label class=\"controls\">\n			<select>\n				<option>1</option>\n				<option>2</option>\n				<option>3</option>\n				<option>4</option>\n				<option>5</option>\n			</select>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Дата начала:</label>\n		<label class=\"controls\">\n			<input type=\"text\" placeholder=\"Введите текст\" value=\"" + point.PERIOD_BEG + "\">\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">План дата закр.:</label>\n		<label class=\"controls\">\n			<input type=\"text\" placeholder=\"Введите текст\" value=\"" + point.PLAN_PERIOD_END + "\">\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Комментарий:</label>\n		<label class=\"controls\">\n			<textarea rows=\"3\"></textarea>\n		</label>\n	</div>\n</form>\n<div class=\"pull-left\">\n	<a class=\"btn btn-danger\" href=\"#\">Удалить</a>\n</div>\n<div class=\"pull-right\">\n	<a class=\"btn btn-primary\" href=\"#\">Сохранить</a>\n	<a class=\"btn\" href=\"#\">Отмена</a>\n</div>";
     }
   };
   return $.fn.snMapsBalloon = function(sn) {
+    if (sn == null) {
+      sn = {};
+    }
+    if ($this[sn]) {
+      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+  };
+});
+
+$(function() {
+  var $this;
+
+  $this = {
+    init: function(options) {
+      if (options == null) {
+        options = {};
+      }
+      return $(this).snUsersTriggers('signinFormSubmit');
+    },
+    afterSignin: function(res) {
+      if (res == null) {
+        res = {};
+      }
+      if (res.signin) {
+        if ((res.signin.login != null) && (res.signin.hash != null)) {
+          return window.user = {
+            login: res.signin.login,
+            hash: res.signin.hash
+          };
+        }
+      }
+    },
+    exit: function() {
+      if (window.user != null) {
+        return window.user = {};
+      }
+    }
+  };
+  return $.fn.snUsers = function(sn) {
+    if (sn == null) {
+      sn = {};
+    }
+    if ($this[sn]) {
+      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
+    } else {
+      return $this.init.apply(this, arguments);
+    }
+  };
+});
+
+$(function() {
+  var $this;
+
+  $this = {
+    signin: function(callback) {
+      return $.ajax({
+        url: 'index.php',
+        type: 'GET',
+        data: {
+          action: 'signin',
+          login: $('#signin-login').val(),
+          password: $('#signin-password').val()
+        },
+        dataType: 'json',
+        success: function(s) {
+          if (s != null) {
+            if (callback != null) {
+              return callback(s);
+            }
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, error) {
+          if (typeof console !== "undefined" && console !== null) {
+            return console.log(XMLHttpRequest, textStatus, error);
+          }
+        }
+      });
+    }
+  };
+  return $.fn.snUsersAjax = function(sn) {
+    if (sn == null) {
+      sn = {};
+    }
+    if ($this[sn]) {
+      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+  };
+});
+
+$(function() {
+  var $this;
+
+  $this = {
+    signinFormSubmit: function(options) {
+      var _this;
+
+      if (options == null) {
+        options = {};
+      }
+      _this = this;
+      $('#signin-form').on('submit', function(e) {
+        e.preventDefault();
+        $('.signin-alert').hide();
+        return $(_this).snUsersAjax('signin', function(res) {
+          if (res.signin != null) {
+            $(_this).snUsers('afterSignin', res);
+            if (res.signin) {
+              $('#signin-form').hide();
+              $('.signin-exit-link').parent('li').show();
+              $('.signin-enter-link').parent('li').hide();
+              return $('.signin-alert-success').show();
+            } else {
+              $('.signin-alert-error').show();
+              return $('#signin-password').val('');
+            }
+          }
+        });
+      });
+      $('.signin-enter-link').on('click', function(e) {
+        e.preventDefault();
+        $('#signin-login').val('');
+        $('#signin-password').val('');
+        return $('.signin-alert').hide();
+      });
+      return $('.signin-exit-link').on('click', function(e) {
+        e.preventDefault();
+        $('.signin-exit-link').parent('li').hide();
+        $('.signin-enter-link').parent('li').show();
+        $('#signin-form').show();
+        $('.signin-alert').hide();
+        $('#signin-password').val('');
+        return $(_this).snUsers('exit');
+      });
+    }
+  };
+  return $.fn.snUsersTriggers = function(sn) {
     if (sn == null) {
       sn = {};
     }

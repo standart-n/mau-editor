@@ -5,6 +5,7 @@ public static $action;
 public static $uuid;
 public static $login;
 public static $password;
+public static $hash;
 public static $callback;
 
 function __construct() {
@@ -27,6 +28,10 @@ function __construct() {
 
 	if (isset($_REQUEST["password"])) {
 		self::$password=trim(strval($_REQUEST["password"]));
+	}
+
+	if (isset($_REQUEST["hash"])) {
+		self::$hash=trim(strval($_REQUEST["hash"]));
 	}
 
 

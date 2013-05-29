@@ -31,11 +31,13 @@ $ ->
 					data:						
 						action: 'getBalloonContent'
 						uuid: uuid
+						login: if window.user?.login? then window.user.login else ""
+						hash: if window.user?.hash? then window.user.hash else ""
 					dataType: 'json'
 					success: (s) ->
 						# console.info s if console?
-						if s.content?
-							callback(s.content) if callback?
+						if s.content? and s.signin?
+							callback(s.content, s.signin) if callback?
 	
 					error: (XMLHttpRequest, textStatus, error) ->
 						console.log XMLHttpRequest, textStatus, error if console?

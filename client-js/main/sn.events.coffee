@@ -45,6 +45,7 @@ $ ->
 						when 'autoload'
 
 							$(this).snMaps()
+							$(this).snUsers()
 
 
 						

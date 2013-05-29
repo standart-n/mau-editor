@@ -33,17 +33,42 @@ $ ->
 			<form class="form-horizontal">
 				<div class="control-group">
 					<label class="control-label">Исполнитель:</label>
-					<label class="control-label">#{point.SAGENT}</label>
+					<label class="controls">
+						<select>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+						</select>
+					</label>
 				</div>
 				<div class="control-group">
 					<label class="control-label">Дата начала:</label>
-					<label class="control-label">#{point.PERIOD_BEG}</label>
+					<label class="controls">
+						<input type="text" placeholder="Введите текст" value="#{point.PERIOD_BEG}">
+					</label>
 				</div>
 				<div class="control-group">
 					<label class="control-label">План дата закр.:</label>
-					<label class="control-label">#{point.PLAN_PERIOD_END}</label>
+					<label class="controls">
+						<input type="text" placeholder="Введите текст" value="#{point.PLAN_PERIOD_END}">
+					</label>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Комментарий:</label>
+					<label class="controls">
+						<textarea rows="3"></textarea>
+					</label>
 				</div>
 			</form>
+			<div class="pull-left">
+				<a class="btn btn-danger" href="#">Удалить</a>
+			</div>
+			<div class="pull-right">
+				<a class="btn btn-primary" href="#">Сохранить</a>
+				<a class="btn" href="#">Отмена</a>
+			</div>
 			"""
 
 

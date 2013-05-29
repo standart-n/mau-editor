@@ -13,7 +13,7 @@ public static function getPoints($j=array()) {
 		for ($i=0;$i<sizeof($m);$i++) {
 			foreach ($m[$i] as $key => $value) {
 				$j[$i][$key] = toUTF($value);
-			}		
+			}
 		}
 		return $j;
 	}
@@ -26,7 +26,7 @@ public static function getBalloonContent($j=array()) {
 		for ($i=0;$i<sizeof($m);$i++) {
 			foreach ($m[$i] as $key => $value) {
 				$j[$i][$key] = toUTF($value);
-			}		
+			}
 		}
 		return $j[0];
 	}

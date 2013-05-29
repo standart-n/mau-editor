@@ -23,14 +23,40 @@ html
 				.container-fluid
 					.row-fluid
 						.pull-left
-							a.brand(href = "#") Перекопы и объезды
-						
-						ul.nav.pull-right
+							
+							a.brand(href = "#") Перекопы и объезды							
+
+							a#signin-link-phone.btn.btn-small.btn-navbar.hidden-phone(href = "#", data-toggle = "modal", data-target = "#modal-signin") 
+								span.icon-user
+
+	
+						//- a.btn.btn-navbar(data-toggle = "collapse", data-target = ".nav-collapse")
+						//- 	span.icon-bar
+						//- 	span.icon-bar
+						//- 	span.icon-bar
+
+						//- .nav-collapse.pull-right
+
+							//- a.signin-link.btn.btn-navbar.visible-phone(href = "#", data-toggle = "collapse", data-target = "#modal-signin") 
+							//- 	i.icon-user
+						//- .nav-collapse
+						//- 	a.btn.btn-navbar(href = "#", data-toggle = "modal", data-target = "#modal-signin") 
+						//- 		i.icon-user
+
+
+						ul.nav.pull-right.hidden-phone
 							li
-								a.signin-link(href = "#", data-toggle = "modal", data-target = "#modal-signin") 
+								a.signin-enter-link(href = "#", data-toggle = "modal", data-target = "#modal-signin") 
 									i.icon-user
 									&nbsp;
 									Войти
+							li.hide
+								a.signin-exit-link(href = "#") 
+									i.icon-off
+									&nbsp;
+									Выйти
+
+
 
 		#main
 			#map.map-main
@@ -39,18 +65,30 @@ html
 		div#modal-signin.modal.hide.fade
 			div.modal-header
 				button(type="button", class="close", data-dismiss="modal") &times;
-				h3 Авторизация
+				h3 Доступ к редактированию
 			div.modal-body
 				p
-					form.form-horizontal
+				
+					.signin-alert-success.signin-alert.alert.alert-success.hide
+						button.close(type="button", data-dismiss="alert") &times
+						strong Поздравляем! 
+						Вы успешно авторизовались
+
+					.signin-alert-error.signin-alert.alert.alert-error.hide
+						button.close(type="button", data-dismiss="alert") &times
+						strong Ошибка! 
+						Вы указали неверный логин или пароль
+
+
+					form#signin-form.form-horizontal
 						.control-group
 							label.control-label(for = "signinLogin") Логин
 							.controls
-								input#signinLogin(type = "text", value = "", placeholder = "Логин")
+								input#signin-login(type = "text", value = "", placeholder = "Логин")
 						.control-group
 							label.control-label(for = "signinPassword") Пароль
 							.controls
-								input#signinPassword(type = "password", value = "", placeholder = "Пароль")
+								input#signin-password(type = "password", value = "", placeholder = "Пароль")
 						//- .control-group
 						//- 	.controls
 						//- 		label.checkbox
@@ -58,7 +96,7 @@ html
 						//- 			Не запоминать
 						.control-group
 							.controls
-								button.btn.btn-primary(type = "button") Войти
+								button.btn.btn-primary(type = "submit") Войти
 
 
 

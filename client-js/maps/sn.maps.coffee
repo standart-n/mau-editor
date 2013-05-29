@@ -14,12 +14,12 @@ $ ->
 					zoom: 12									# начальное приближение
 					behaviors: ['default', 'scrollZoom']		# возможность зуммировать мышью
 
-				map.options.set 'scrollZoomSpeed', 1 			# скорость зума
+				map.options.set 'scrollZoomSpeed', 4 			# скорость зума
 
 				# стандартные инструменты на карте
-				map.controls.add 'zoomControl'
-				map.controls.add 'typeSelector'
-				map.controls.add 'mapTools'
+				map.controls.add 'zoomControl'					# шкала зума
+				map.controls.add 'typeSelector'					# переключение на спутник / гибрид
+				map.controls.add 'mapTools'						# стандартные инструменты
 
 				# берем с сервера точки и выводим их
 				$(_this).snMapsAjax 'getPoints', (points) ->
@@ -54,9 +54,9 @@ $ ->
 								)
 								(
 									# ширина балуна
-									balloonMinWidth:350
+									balloonMinWidth: 350
 									# высота балуна
-									balloonMinHeight:200
+									balloonMinHeight: 200
 									# иконка метки
 									preset: if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
 								)
@@ -65,11 +65,22 @@ $ ->
 
 								placemark = e.get('target')
 								uuid = placemark.properties.get('uuid').toString()
-								
-								$(_this).snMapsAjax 'getBalloonContent', uuid, (balloon) ->
-									$('.balloonContentBody').each () ->
-										if uuid is balloon.D$UUID.toString()
-											$(this).html $(_this).snMapsBalloon('getBalloonContent', balloon)
+
+								$(_this).snMapsAjax 'getBalloonContent', uuid, (balloon, signin) ->
+
+									if signin
+										placemark.options.set 'balloonMinWidth', 500
+										placemark.properties.set 'balloonContentBody',
+											$(_this).snMapsBalloon('getBalloonContentEditor', balloon)
+										# placemark.properties.set 'balloonContentFooter',
+										# 	$(_this).snMapsBalloon('getBalloonFooterEditor')
+
+									else
+										placemark.properties.set 'balloonContentBody',
+											$(_this).snMapsBalloon('getBalloonContent', balloon)
+
+
+
 
 
 
@@ -85,9 +96,9 @@ $ ->
 
 					# настройки кластера
 					clusterer.options.set
-						gridSize: 100
-						maxZoom: 16
-						minClusterSize: 2
+						gridSize: 100			# Размер ячейки кластера в пикселях. 
+						maxZoom: 16				# Максимальный коэффициент масштабирования карты, на котором происходит кластеризация объектов.
+						minClusterSize: 2 		# Минимальное количество объектов, образующих кластер.
 					
 					# добавляем кластер на карту
 					map.geoObjects.add(clusterer)

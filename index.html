@@ -23,10 +23,12 @@
       <div class="navbar-inner">
         <div class="container-fluid">
           <div class="row-fluid">
-            <div class="pull-left"><a href="#" class="brand">Перекопы и объезды</a></div>
-            <ul class="nav pull-right">
-              <li><a href="#" data-toggle="modal" data-target="#modal-signin" class="signin-link"> <i class="icon-user"></i>&nbsp;
+            <div class="pull-left"><a href="#" class="brand">Перекопы и объезды							</a><a id="signin-link-phone" href="#" data-toggle="modal" data-target="#modal-signin" class="btn btn-small btn-navbar hidden-phone"> <span class="icon-user"></span></a></div>
+            <ul class="nav pull-right hidden-phone">
+              <li><a href="#" data-toggle="modal" data-target="#modal-signin" class="signin-enter-link"> <i class="icon-user"></i>&nbsp;
                   Войти</a></li>
+              <li class="hide"><a href="#" class="signin-exit-link"> <i class="icon-off"></i>&nbsp;
+                  Выйти</a></li>
             </ul>
           </div>
         </div>
@@ -38,26 +40,32 @@
     <div id="modal-signin" class="modal hide fade">
       <div class="modal-header">
         <button type="button" data-dismiss="modal" class="close">&times;</button>
-        <h3>Авторизация</h3>
+        <h3>Доступ к редактированию</h3>
       </div>
       <div class="modal-body">
         <p>
-          <form class="form-horizontal">
+          <div class="signin-alert-success signin-alert alert alert-success hide">
+            <button type="button" data-dismiss="alert" class="close">&times</button><strong>Поздравляем! </strong>Вы успешно авторизовались
+          </div>
+          <div class="signin-alert-error signin-alert alert alert-error hide">
+            <button type="button" data-dismiss="alert" class="close">&times</button><strong>Ошибка! </strong>Вы указали неверный логин или пароль
+          </div>
+          <form id="signin-form" class="form-horizontal">
             <div class="control-group">
               <label for="signinLogin" class="control-label">Логин</label>
               <div class="controls">
-                <input id="signinLogin" type="text" value="" placeholder="Логин">
+                <input id="signin-login" type="text" value="" placeholder="Логин">
               </div>
             </div>
             <div class="control-group">
               <label for="signinPassword" class="control-label">Пароль</label>
               <div class="controls">
-                <input id="signinPassword" type="password" value="" placeholder="Пароль">
+                <input id="signin-password" type="password" value="" placeholder="Пароль">
               </div>
             </div>
             <div class="control-group">
               <div class="controls">
-                <button type="button" class="btn btn-primary">Войти</button>
+                <button type="submit" class="btn btn-primary">Войти</button>
               </div>
             </div>
           </form>

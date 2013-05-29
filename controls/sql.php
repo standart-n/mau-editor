@@ -23,5 +23,10 @@ public static function getBalloonContent($s="") {
 	return $s;
 }
 
+public static function signin($login,$password,$s="") {
+	$s.="select id from sp\$users where fio='".$login."' and  USERPSW='".$password."'";
+	return $s;
+}
+
 
 } ?>
