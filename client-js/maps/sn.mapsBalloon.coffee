@@ -1,6 +1,5 @@
 $ ->
 
-	# интерфейс для AJAX-запросов
 	$this =
 
 		# делаем запрос к серверу, чтобы взять содержимое балуна
@@ -46,13 +45,19 @@ $ ->
 				<div class="control-group">
 					<label class="control-label">Дата начала:</label>
 					<label class="controls">
-						<input type="text" placeholder="Введите текст" value="#{point.PERIOD_BEG}">
+						<div id="dp1" class="input-append date" data-date="#{point.PERIOD_BEG}" data-date-format="dd.mm.yyyy">
+							<input id="date1" class="input-small" size="16" type="text" value="#{point.PERIOD_BEG}">
+							<span class="add-on"><i class="icon-th"></i></span>
+						</div>
 					</label>
 				</div>
 				<div class="control-group">
 					<label class="control-label">План дата закр.:</label>
 					<label class="controls">
-						<input type="text" placeholder="Введите текст" value="#{point.PLAN_PERIOD_END}">
+						<div id="dp1" class="input-append date" data-date="#{point.PLAN_PERIOD_END}" data-date-format="dd.mm.yyyy">
+							<input id="date1" class="input-small" size="16" type="text" value="#{point.PLAN_PERIOD_END}">
+							<span class="add-on"><i class="icon-th"></i></span>
+						</div>
 					</label>
 				</div>
 				<div class="control-group">
@@ -70,6 +75,8 @@ $ ->
 				<a class="btn" href="#">Отмена</a>
 			</div>
 			"""
+
+				#<input type="text" placeholder="Введите текст" value="">
 
 
 	$.fn.snMapsBalloon = (sn = {}) ->

@@ -89,15 +89,20 @@ html
 							label.control-label(for = "signinPassword") Пароль
 							.controls
 								input#signin-password(type = "password", value = "", placeholder = "Пароль")
-						//- .control-group
-						//- 	.controls
-						//- 		label.checkbox
-						//- 			input(type = "checkbox")
-						//- 			Не запоминать
 						.control-group
 							.controls
 								button.btn.btn-primary(type = "submit") Войти
 
+
+		div#modal-newmark.modal.hide.fade
+			div.modal-header
+				button(type="button", class="close", data-dismiss="modal") &times;
+				h3 Создать объект?
+			div.modal-body
+				p
+					.btn-group
+						a.btn(href = "#") Сделать перекоп						
+						a.btn(href = "#") Сделать объезд
 
 
 			div.modal-footer

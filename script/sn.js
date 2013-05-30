@@ -226,9 +226,9 @@ $(function() {
       if (options == null) {
         options = {};
       }
-      _this = $(this);
+      _this = this;
       return ymaps.ready(function() {
-        var map;
+        var clusterer, map, placemarks;
 
         map = new ymaps.Map('map', {
           center: [56.840001, 53.239778],
@@ -239,40 +239,24 @@ $(function() {
         map.controls.add('zoomControl');
         map.controls.add('typeSelector');
         map.controls.add('mapTools');
-        return $(_this).snMapsAjax('getPoints', function(points) {
-          var clusterer, coordinates, coords, i, placemarks, point;
+        clusterer = new ymaps.Clusterer();
+        placemarks = [];
+        map.events.add('click', function(e) {
+          var coordinates;
 
-          clusterer = new ymaps.Clusterer();
-          placemarks = [];
+          coordinates = e.get('coordPosition');
+          return $('#modal-newmark').modal({
+            keyboard: true,
+            backdrop: false
+          });
+        });
+        return $(_this).snMapsAjax('getPoints', function(points) {
+          var i, point;
+
           for (i in points) {
             point = points[i];
             if (point.POINT != null) {
-              coords = point.POINT.toString().replace(/[\s\[\]]/g, '');
-              coordinates = [coords.replace(/^(.*)\,(.*)$/, '$1'), coords.replace(/^(.*)\,(.*)$/, '$2')];
-              placemarks[i] = new ymaps.Placemark(coordinates, {
-                hintContent: point.PLAN_PERIOD_END != null ? "до <b>" + (point.PLAN_PERIOD_END.toString()) + "</b>" : void 0,
-                balloonContentHeader: "<div class=\"balloonContentHeader\" data-id=\"" + point.D$UUID + "\">" + point.SVID + "</div>",
-                balloonContentBody: "<div class=\"balloonContentBody\" data-id=\"" + point.D$UUID + "\"></div>",
-                uuid: point.D$UUID.toString()
-              }, {
-                balloonMinWidth: 350,
-                balloonMinHeight: 200,
-                preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon'
-              });
-              placemarks[i].events.add('balloonopen', function(e) {
-                var placemark, uuid;
-
-                placemark = e.get('target');
-                uuid = placemark.properties.get('uuid').toString();
-                return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon, signin) {
-                  if (signin) {
-                    placemark.options.set('balloonMinWidth', 500);
-                    return placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContentEditor', balloon));
-                  } else {
-                    return placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContent', balloon));
-                  }
-                });
-              });
+              placemarks[i] = $(_this).snMapsPlacemark(ymaps, point);
             }
           }
           clusterer.add(placemarks);
@@ -372,7 +356,7 @@ $(function() {
       return "<p>\n	<table class=\"table\">\n		<tr>\n			<td>Исполнитель:</td>\n			<td class=\"text-error\">" + point.SAGENT + "</td>\n		</tr>\n		<tr>\n			<td>Дата начала:</td>\n			<td class=\"text-error\">" + point.PERIOD_BEG + "</td>\n		</tr>\n		<tr>\n			<td>План. дата закр.:</td>\n			<td class=\"text-error\">" + point.PLAN_PERIOD_END + "</td>\n		</tr>\n	</table>\n</p>";
     },
     getBalloonContentEditor: function(point) {
-      return "<form class=\"form-horizontal\">\n	<div class=\"control-group\">\n		<label class=\"control-label\">Исполнитель:</label>\n		<label class=\"controls\">\n			<select>\n				<option>1</option>\n				<option>2</option>\n				<option>3</option>\n				<option>4</option>\n				<option>5</option>\n			</select>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Дата начала:</label>\n		<label class=\"controls\">\n			<input type=\"text\" placeholder=\"Введите текст\" value=\"" + point.PERIOD_BEG + "\">\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">План дата закр.:</label>\n		<label class=\"controls\">\n			<input type=\"text\" placeholder=\"Введите текст\" value=\"" + point.PLAN_PERIOD_END + "\">\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Комментарий:</label>\n		<label class=\"controls\">\n			<textarea rows=\"3\"></textarea>\n		</label>\n	</div>\n</form>\n<div class=\"pull-left\">\n	<a class=\"btn btn-danger\" href=\"#\">Удалить</a>\n</div>\n<div class=\"pull-right\">\n	<a class=\"btn btn-primary\" href=\"#\">Сохранить</a>\n	<a class=\"btn\" href=\"#\">Отмена</a>\n</div>";
+      return "<form class=\"form-horizontal\">\n	<div class=\"control-group\">\n		<label class=\"control-label\">Исполнитель:</label>\n		<label class=\"controls\">\n			<select>\n				<option>1</option>\n				<option>2</option>\n				<option>3</option>\n				<option>4</option>\n				<option>5</option>\n			</select>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Дата начала:</label>\n		<label class=\"controls\">\n			<div id=\"dp1\" class=\"input-append date\" data-date=\"" + point.PERIOD_BEG + "\" data-date-format=\"dd.mm.yyyy\">\n				<input id=\"date1\" class=\"input-small\" size=\"16\" type=\"text\" value=\"" + point.PERIOD_BEG + "\">\n				<span class=\"add-on\"><i class=\"icon-th\"></i></span>\n			</div>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">План дата закр.:</label>\n		<label class=\"controls\">\n			<div id=\"dp1\" class=\"input-append date\" data-date=\"" + point.PLAN_PERIOD_END + "\" data-date-format=\"dd.mm.yyyy\">\n				<input id=\"date1\" class=\"input-small\" size=\"16\" type=\"text\" value=\"" + point.PLAN_PERIOD_END + "\">\n				<span class=\"add-on\"><i class=\"icon-th\"></i></span>\n			</div>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Комментарий:</label>\n		<label class=\"controls\">\n			<textarea rows=\"3\"></textarea>\n		</label>\n	</div>\n</form>\n<div class=\"pull-left\">\n	<a class=\"btn btn-danger\" href=\"#\">Удалить</a>\n</div>\n<div class=\"pull-right\">\n	<a class=\"btn btn-primary\" href=\"#\">Сохранить</a>\n	<a class=\"btn\" href=\"#\">Отмена</a>\n</div>";
     }
   };
   return $.fn.snMapsBalloon = function(sn) {
@@ -381,6 +365,66 @@ $(function() {
     }
     if ($this[sn]) {
       return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+  };
+});
+
+$(function() {
+  var $this;
+
+  $this = {
+    init: function(ymaps, point) {
+      var placemark, _this;
+
+      _this = this;
+      placemark = new ymaps.Placemark($this.coordinates(point), $this.properties(point), $this.options(point));
+      placemark.events.add('balloonopen', function(e) {
+        var uuid;
+
+        placemark = e.get('target');
+        uuid = placemark.properties.get('uuid').toString();
+        return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon, signin) {
+          if (signin) {
+            placemark.options.set('balloonMinWidth', 500);
+            placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContentEditor', balloon));
+            return $('#dp1').datepicker();
+          } else {
+            return placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContent', balloon));
+          }
+        });
+      });
+      return placemark;
+    },
+    coordinates: function(point) {
+      var coordinates, coords;
+
+      coords = point.POINT.toString().replace(/[\s\[\]]/g, '');
+      return coordinates = [coords.replace(/^(.*)\,(.*)$/, '$1'), coords.replace(/^(.*)\,(.*)$/, '$2')];
+    },
+    properties: function(point) {
+      return {
+        hintContent: point.PLAN_PERIOD_END != null ? "до <b>" + (point.PLAN_PERIOD_END.toString()) + "</b>" : void 0,
+        balloonContentHeader: "<div class=\"balloonContentHeader\" data-id=\"" + point.D$UUID + "\">" + point.SVID + "</div>",
+        balloonContentBody: "<div class=\"balloonContentBody\" data-id=\"" + point.D$UUID + "\"></div>",
+        uuid: point.D$UUID.toString()
+      };
+    },
+    options: function(point) {
+      return {
+        balloonMinWidth: 350,
+        balloonMinHeight: 200,
+        preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon'
+      };
+    }
+  };
+  return $.fn.snMapsPlacemark = function(sn) {
+    if (sn == null) {
+      sn = {};
+    }
+    if ($this[sn]) {
+      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
+    } else {
+      return $this.init.apply(this, arguments);
     }
   };
 });
