@@ -241,14 +241,31 @@ $(function() {
         map.controls.add('mapTools');
         clusterer = new ymaps.Clusterer();
         placemarks = [];
-        map.events.add('click', function(e) {
-          var coordinates;
+        map.events.add('click', function(event) {
+          var coordinates, _ref, _ref1, _ref2;
 
-          coordinates = e.get('coordPosition');
-          return $('#modal-newmark').modal({
-            keyboard: true,
-            backdrop: false
-          });
+          if ((((_ref = window.user) != null ? _ref.id : void 0) != null) && (((_ref1 = window.user) != null ? _ref1.login : void 0) != null) && (((_ref2 = window.user) != null ? _ref2.hash : void 0) != null)) {
+            coordinates = event.get('coordPosition');
+            map = event.get('target');
+            $('#modal-newmark').modal();
+            $('.newmark-add-link').off('click');
+            return $('.newmark-add-link').on('click', function(e) {
+              e.preventDefault();
+              return $(_this).snMapsAjax('addNewMark', coordinates, $(this).data('vid'), function(res) {
+                var placemark;
+
+                if (res) {
+                  if (typeof console !== "undefined" && console !== null) {
+                    console.info('add', res);
+                  }
+                  placemark = $(_this).snMapsPlacemark(ymaps, res);
+                  return map.geoObjects.add(placemark);
+                } else {
+                  return alert('К сожалению, не удалось добавить метку на карту');
+                }
+              });
+            });
+          }
         });
         return $(_this).snMapsAjax('getPoints', function(points) {
           var i, point;
@@ -309,7 +326,7 @@ $(function() {
       });
     },
     getBalloonContent: function(uuid, callback) {
-      var _ref, _ref1;
+      var _ref, _ref1, _ref2;
 
       if (uuid != null) {
         return $.ajax({
@@ -318,14 +335,47 @@ $(function() {
           data: {
             action: 'getBalloonContent',
             uuid: uuid,
-            login: ((_ref = window.user) != null ? _ref.login : void 0) != null ? window.user.login : "",
-            hash: ((_ref1 = window.user) != null ? _ref1.hash : void 0) != null ? window.user.hash : ""
+            id: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : "",
+            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : "",
+            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ""
           },
           dataType: 'json',
           success: function(s) {
             if ((s.content != null) && (s.signin != null)) {
               if (callback != null) {
                 return callback(s.content, s.signin);
+              }
+            }
+          },
+          error: function(XMLHttpRequest, textStatus, error) {
+            if (typeof console !== "undefined" && console !== null) {
+              return console.log(XMLHttpRequest, textStatus, error);
+            }
+          }
+        });
+      }
+    },
+    addNewMark: function(coordinates, vid_id, callback) {
+      var _ref, _ref1, _ref2;
+
+      if ((coordinates != null) && (vid_id != null) && (((_ref = window.user) != null ? _ref.id : void 0) != null) && (((_ref1 = window.user) != null ? _ref1.login : void 0) != null) && (((_ref2 = window.user) != null ? _ref2.hash : void 0) != null)) {
+        return $.ajax({
+          url: 'index.php',
+          type: 'GET',
+          data: {
+            action: 'addNewMark',
+            lat: coordinates[0],
+            lon: coordinates[1],
+            userid: window.user.id,
+            login: window.user.login,
+            hash: window.user.hash,
+            vid: vid_id
+          },
+          dataType: 'json',
+          success: function(s) {
+            if (s.res != null) {
+              if (callback != null) {
+                return callback(s.res);
               }
             }
           },
@@ -357,29 +407,7 @@ $(function() {
 
       _this = this;
       placemark = new ymaps.Placemark($this.coordinates(point), $this.properties(point), $this.options(point));
-      placemark.events.add('balloonopen', function(e) {
-        var uuid;
-
-        placemark = e.get('target');
-        uuid = placemark.properties.get('uuid').toString();
-        return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon, signin) {
-          if (signin) {
-            placemark.options.set('balloonMinWidth', 500);
-            placemark.properties.set('balloonContentBody', new EJS({
-              url: 'view/balloonContentEditor.html',
-              ext: '.html',
-              type: '['
-            }).render(balloon));
-            return $('#dp1').datepicker();
-          } else {
-            return placemark.properties.set('balloonContentBody', new EJS({
-              url: 'view/balloonContent.html',
-              ext: '.html',
-              type: '['
-            }).render(balloon));
-          }
-        });
-      });
+      placemark = $this.onBalloonOpen(placemark);
       return placemark;
     },
     coordinates: function(point) {
@@ -402,6 +430,40 @@ $(function() {
         balloonMinHeight: 200,
         preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon'
       };
+    },
+    onBalloonOpen: function(placemark) {
+      var _this;
+
+      _this = this;
+      placemark.events.add('balloonopen', function(e) {
+        var uuid;
+
+        placemark = e.get('target');
+        uuid = placemark.properties.get('uuid').toString();
+        return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon, signin) {
+          var _ref, _ref1, _ref2;
+
+          if (signin && ((_ref = window.user) != null ? (_ref1 = _ref.id) != null ? _ref1.toString() : void 0 : void 0) === ((_ref2 = balloon.USER_ID) != null ? _ref2.toString() : void 0)) {
+            alert(window.user.id.toString() + ' - ' + balloon.USER_ID.toString());
+            placemark.options.set('balloonMinWidth', 500);
+            placemark.options.set('balloonMinHeight', 300);
+            placemark.properties.set('balloonContentBody', new EJS({
+              url: 'view/balloonContentEditor.html',
+              ext: '.html',
+              type: '['
+            }).render(balloon));
+            $('#dp1').datepicker();
+            return $('#dp2').datepicker();
+          } else {
+            return placemark.properties.set('balloonContentBody', new EJS({
+              url: 'view/balloonContent.html',
+              ext: '.html',
+              type: '['
+            }).render(balloon));
+          }
+        });
+      });
+      return placemark;
     }
   };
   return $.fn.snMapsPlacemark = function(sn) {
@@ -412,6 +474,19 @@ $(function() {
       return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
     } else {
       return $this.init.apply(this, arguments);
+    }
+  };
+});
+
+$(function() {
+  var $this;
+
+  return $this = $.fn.snMapsTriggers = function(sn) {
+    if (sn == null) {
+      sn = {};
+    }
+    if ($this[sn]) {
+      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
     }
   };
 });
@@ -431,8 +506,9 @@ $(function() {
         res = {};
       }
       if (res.signin) {
-        if ((res.signin.login != null) && (res.signin.hash != null)) {
+        if ((res.signin.id != null) && (res.signin.login != null) && (res.signin.hash != null)) {
           return window.user = {
+            id: res.signin.id,
             login: res.signin.login,
             hash: res.signin.hash
           };

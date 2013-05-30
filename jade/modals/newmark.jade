@@ -5,9 +5,10 @@ div#modal-newmark.modal.hide.fade
 		h3 Создать объект?
 	div.modal-body
 		p
-			.btn-group
-				a.btn(href = "#") Сделать перекоп						
-				a.btn(href = "#") Сделать объезд
+			
+			#newmark-toolbar.btn-group
+				a.newmark-add-link.btn(href = "#", data-vid = "0", data-dismiss="modal") Сделать перекоп
+				a.newmark-add-link.btn(href = "#", data-vid = "1", data-dismiss="modal") Сделать объезд
 
 
 	div.modal-footer

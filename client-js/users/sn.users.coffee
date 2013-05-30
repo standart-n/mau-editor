@@ -7,10 +7,11 @@ $ ->
 
 		afterSignin: (res = {}) ->
 			if res.signin
-				if res.signin.login? and res.signin.hash?
+				if res.signin.id? and res.signin.login? and res.signin.hash?
 					window.user = 
-						login: res.signin.login
-						hash: res.signin.hash
+						id: 		res.signin.id
+						login: 		res.signin.login
+						hash: 		res.signin.hash
 
 		exit: () ->
 			window.user = {} if window.user?

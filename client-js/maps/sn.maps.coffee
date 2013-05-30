@@ -5,6 +5,9 @@ $ ->
 
 			_this = this
 
+			#триггеры на добавление нового перекопа или объезда
+			#$(this).snMapsTriggers '	addNewMark'
+
 			# ждем когда загрузятся яндекс.карты
 			ymaps.ready () ->
 
@@ -24,30 +27,39 @@ $ ->
 				clusterer = new ymaps.Clusterer()			# создаем кластеризатор
 				placemarks = []								# массив меток
 
-				map.events.add 'click', (e) ->
-					coordinates = e.get 'coordPosition'
-					# m = e.get('target')
-					# mark = new ymaps.Placemark coordinates,
-					# 	(
-					# 		# заголовок подсказки на метке
-					# 		hintContent: "1321"
-					# 		# заголовок балуна
-					# 		balloonContentHeader: "2131"
-					# 		# содержимое балуна
-					# 		balloonContentBody: "1312"
-					# 	)
-					# 	(
-					# 		# ширина балуна
-					# 		balloonMinWidth: 350
-					# 		# высота балуна
-					# 		balloonMinHeight: 200
-					# 	)
+				# событие при клике на карту для создания новой метки
+				map.events.add 'click', (event) ->
 
-					# m.geoObjects.add(mark)	
+					# проверяем есть ли данные об авторизации пользователя
+					if window.user?.id? and window.user?.login? and window.user?.hash?
+					
+						# вычисляем координаты клика
+						coordinates = event.get 'coordPosition'
+						# берем объект с картой
+						map = event.get('target')
 
-					$('#modal-newmark').modal
-						keyboard: on
-						backdrop: off
+						# m.geoObjects.add(mark)	
+
+						# вызываем модальное окно с предложением создать новую метку
+						$('#modal-newmark').modal()
+						# убираем с кнопок предыдущие триггеры
+						$('.newmark-add-link').off 'click'
+						# ставим новый триггер с новыми координатами
+						$('.newmark-add-link').on 'click', (e) ->
+							e.preventDefault()
+
+							# делаем запрос к базе с целью создания метки
+							$(_this).snMapsAjax 'addNewMark', coordinates, $(this).data('vid'), (res) ->
+								# если пришел положительный ответ
+								if res
+									console.info 'add', res if console?
+									# создаем метку
+									placemark = $(_this).snMapsPlacemark ymaps, res
+									# добавляем ее на карту
+									map.geoObjects.add(placemark)
+								else
+									alert 'К сожалению, не удалось добавить метку на карту'
+
 
 				# берем с сервера точки и выводим их
 				$(_this).snMapsAjax 'getPoints', (points) ->

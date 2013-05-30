@@ -8,22 +8,7 @@ $ ->
 
 			placemark = new ymaps.Placemark $this.coordinates(point), $this.properties(point), $this.options(point)
 
-			placemark.events.add 'balloonopen', (e) ->
-
-				placemark = e.get('target')
-				uuid = placemark.properties.get('uuid').toString()
-
-				$(_this).snMapsAjax 'getBalloonContent', uuid, (balloon, signin) ->
-
-					if signin
-						placemark.options.set 'balloonMinWidth', 500
-						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[').render(balloon)
-						$('#dp1').datepicker()
-
-					else
-						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[').render(balloon)
+			placemark = $this.onBalloonOpen(placemark)
 
 			placemark
 
@@ -59,6 +44,31 @@ $ ->
 			# иконка метки
 			preset: if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
 
+		onBalloonOpen: (placemark) ->
+
+			_this = this
+
+			placemark.events.add 'balloonopen', (e) ->
+
+				placemark = e.get('target')
+				uuid = placemark.properties.get('uuid').toString()
+
+				$(_this).snMapsAjax 'getBalloonContent', uuid, (balloon, signin) ->
+
+					if signin and window.user?.id?.toString() is balloon.USER_ID?.toString()
+						alert window.user.id.toString() + ' - ' + balloon.USER_ID.toString()
+						placemark.options.set 'balloonMinWidth', 500
+						placemark.options.set 'balloonMinHeight', 300
+						placemark.properties.set 'balloonContentBody',
+							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[').render(balloon)
+						$('#dp1').datepicker()
+						$('#dp2').datepicker()
+
+					else
+						placemark.properties.set 'balloonContentBody',
+							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[').render(balloon)
+
+			placemark
 
 
 

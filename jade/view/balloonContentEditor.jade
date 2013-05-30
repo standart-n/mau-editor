@@ -18,8 +18,8 @@ form.form-horizontal
 	div.control-group
 		label.control-label План дата закр.:
 		label.controls
-			div#dp1.input-append.date(data-date = "[%= PLAN_PERIOD_END %]", data-date-format = "dd.mm.yyyy")
-				input#date1.input-small(size = "16", type = "text", value = "[%= PLAN_PERIOD_END %]")
+			div#dp2.input-append.date(data-date = "30.05.2013", data-date-format = "dd.mm.yyyy")
+				input#date2.input-small(size = "16", type = "text", value = "[%= PLAN_PERIOD_END %]")
 				span.add-on
 					i.icon-th
 	div.control-group
@@ -28,6 +28,6 @@ form.form-horizontal
 			textarea(rows = "3")
 div.pull-left
 	a.btn.btn-danger(href="#") Удалить
-div.pull-right
+div.pull-right.btn-group
 	a.btn.btn-primary(href="#") Сохранить
 	a.btn(href="#") Отмена

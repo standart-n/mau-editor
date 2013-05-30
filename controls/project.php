@@ -20,6 +20,9 @@ public static function engine() {
 		case "getBalloonContent":
 			return self::getBalloonContent();
 		break;
+		case "addNewMark":
+			return self::addNewMark();
+		break;
 	}
 	return false;
 }
@@ -48,6 +51,12 @@ public static function getBalloonContent($j=array()) {
 	$j['content']=editor::getBalloonContent();
 	$j['tm']=time();	
 	if (signin::check()) { $j['signin']=true; } else { $j['signin']=false; }
+	return $j;
+}
+
+public static function addNewMark($j=array()) {
+	$j['res']=editor::addNewMark();
+	$j['tm']=time();	
 	return $j;
 }
 
