@@ -352,27 +352,6 @@ $(function() {
   var $this;
 
   $this = {
-    getBalloonContent: function(point) {
-      return "<p>\n	<table class=\"table\">\n		<tr>\n			<td>Исполнитель:</td>\n			<td class=\"text-error\">" + point.SAGENT + "</td>\n		</tr>\n		<tr>\n			<td>Дата начала:</td>\n			<td class=\"text-error\">" + point.PERIOD_BEG + "</td>\n		</tr>\n		<tr>\n			<td>План. дата закр.:</td>\n			<td class=\"text-error\">" + point.PLAN_PERIOD_END + "</td>\n		</tr>\n	</table>\n</p>";
-    },
-    getBalloonContentEditor: function(point) {
-      return "<form class=\"form-horizontal\">\n	<div class=\"control-group\">\n		<label class=\"control-label\">Исполнитель:</label>\n		<label class=\"controls\">\n			<select>\n				<option>1</option>\n				<option>2</option>\n				<option>3</option>\n				<option>4</option>\n				<option>5</option>\n			</select>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Дата начала:</label>\n		<label class=\"controls\">\n			<div id=\"dp1\" class=\"input-append date\" data-date=\"" + point.PERIOD_BEG + "\" data-date-format=\"dd.mm.yyyy\">\n				<input id=\"date1\" class=\"input-small\" size=\"16\" type=\"text\" value=\"" + point.PERIOD_BEG + "\">\n				<span class=\"add-on\"><i class=\"icon-th\"></i></span>\n			</div>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">План дата закр.:</label>\n		<label class=\"controls\">\n			<div id=\"dp1\" class=\"input-append date\" data-date=\"" + point.PLAN_PERIOD_END + "\" data-date-format=\"dd.mm.yyyy\">\n				<input id=\"date1\" class=\"input-small\" size=\"16\" type=\"text\" value=\"" + point.PLAN_PERIOD_END + "\">\n				<span class=\"add-on\"><i class=\"icon-th\"></i></span>\n			</div>\n		</label>\n	</div>\n	<div class=\"control-group\">\n		<label class=\"control-label\">Комментарий:</label>\n		<label class=\"controls\">\n			<textarea rows=\"3\"></textarea>\n		</label>\n	</div>\n</form>\n<div class=\"pull-left\">\n	<a class=\"btn btn-danger\" href=\"#\">Удалить</a>\n</div>\n<div class=\"pull-right\">\n	<a class=\"btn btn-primary\" href=\"#\">Сохранить</a>\n	<a class=\"btn\" href=\"#\">Отмена</a>\n</div>";
-    }
-  };
-  return $.fn.snMapsBalloon = function(sn) {
-    if (sn == null) {
-      sn = {};
-    }
-    if ($this[sn]) {
-      return $this[sn].apply(this, Array.prototype.slice.call(arguments, 1));
-    }
-  };
-});
-
-$(function() {
-  var $this;
-
-  $this = {
     init: function(ymaps, point) {
       var placemark, _this;
 
@@ -386,12 +365,17 @@ $(function() {
         return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon, signin) {
           if (signin) {
             placemark.options.set('balloonMinWidth', 500);
-            placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContentEditor', balloon));
+            placemark.properties.set('balloonContentBody', new EJS({
+              url: 'view/balloonContentEditor.html',
+              ext: '.html',
+              type: '['
+            }).render(balloon));
             return $('#dp1').datepicker();
           } else {
             return placemark.properties.set('balloonContentBody', new EJS({
               url: 'view/balloonContent.html',
-              ext: '.html'
+              ext: '.html',
+              type: '['
             }).render(balloon));
           }
         });

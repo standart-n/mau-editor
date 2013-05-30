@@ -18,13 +18,12 @@ $ ->
 					if signin
 						placemark.options.set 'balloonMinWidth', 500
 						placemark.properties.set 'balloonContentBody',
-							$(_this).snMapsBalloon('getBalloonContentEditor', balloon)
+							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[').render(balloon)
 						$('#dp1').datepicker()
 
 					else
 						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContent.html', ext: '.html').render(balloon)
-							#$(_this).snMapsBalloon('getBalloonContent', balloon)
+							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[').render(balloon)
 
 			placemark
 
