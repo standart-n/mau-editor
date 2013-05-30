@@ -1,0 +1,40 @@
+
+#bar.navbar.navbar-static-top
+	.navbar-inner
+		.container-fluid
+			.row-fluid
+				.pull-left
+					
+					a.brand(href = "#") Перекопы и объезды							
+
+					a#signin-link-phone.btn.btn-small.btn-navbar.hidden-phone(href = "#", data-toggle = "modal", data-target = "#modal-signin") 
+						span.icon-user
+
+
+				//- a.btn.btn-navbar(data-toggle = "collapse", data-target = ".nav-collapse")
+				//- 	span.icon-bar
+				//- 	span.icon-bar
+				//- 	span.icon-bar
+
+				//- .nav-collapse.pull-right
+
+					//- a.signin-link.btn.btn-navbar.visible-phone(href = "#", data-toggle = "collapse", data-target = "#modal-signin") 
+					//- 	i.icon-user
+				//- .nav-collapse
+				//- 	a.btn.btn-navbar(href = "#", data-toggle = "modal", data-target = "#modal-signin") 
+				//- 		i.icon-user
+
+
+				ul.nav.pull-right.hidden-phone
+					li
+						a.signin-enter-link(href = "#", data-toggle = "modal", data-target = "#modal-signin") 
+							i.icon-user
+							&nbsp;
+							Войти
+					li.hide
+						a.signin-exit-link(href = "#") 
+							i.icon-off
+							&nbsp;
+							Выйти
+
+

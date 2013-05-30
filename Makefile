@@ -29,8 +29,8 @@ css:
 
 
 tpl:
-	@jade --pretty ./layout/index.jade -O ./
-
+	@jade --pretty ./jade/index.jade -O ./
+	@jade --pretty ./jade/view/* -O ./view/
 
 	
 finish:

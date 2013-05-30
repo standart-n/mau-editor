@@ -389,7 +389,10 @@ $(function() {
             placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContentEditor', balloon));
             return $('#dp1').datepicker();
           } else {
-            return placemark.properties.set('balloonContentBody', $(_this).snMapsBalloon('getBalloonContent', balloon));
+            return placemark.properties.set('balloonContentBody', new EJS({
+              url: 'view/balloonContent.html',
+              ext: '.html'
+            }).render(balloon));
           }
         });
       });

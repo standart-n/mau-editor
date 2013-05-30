@@ -23,7 +23,8 @@ $ ->
 
 					else
 						placemark.properties.set 'balloonContentBody',
-							$(_this).snMapsBalloon('getBalloonContent', balloon)
+							new EJS(url: 'view/balloonContent.html', ext: '.html').render(balloon)
+							#$(_this).snMapsBalloon('getBalloonContent', balloon)
 
 			placemark
 
