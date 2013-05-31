@@ -4,7 +4,9 @@ public static $region_id;
 public static $action;
 public static $uuid;
 public static $userid;
-public static $agentid;
+public static $agent;
+public static $date1;
+public static $date2;
 public static $login;
 public static $password;
 public static $hash;
@@ -55,6 +57,20 @@ function __construct() {
 	if (isset($_REQUEST["info"])) {
 		self::$info=trim(strval($_REQUEST["info"]));
 	}
+
+	if (isset($_REQUEST["agent"])) {
+		self::$agent=trim(strval($_REQUEST["agent"]));
+	}
+
+	if (isset($_REQUEST["date1"])) {
+		self::$date1=trim(strval($_REQUEST["date1"]));
+	}
+
+	if (isset($_REQUEST["date2"])) {
+		self::$date2=trim(strval($_REQUEST["date2"]));
+	}
+
+
 
 	if (isset($_REQUEST["vid"])) {
 		self::$vid=trim(intval($_REQUEST["vid"]));

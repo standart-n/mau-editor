@@ -334,9 +334,9 @@ $(function() {
           data: {
             action: 'getBalloonContent',
             uuid: uuid,
-            id: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : "",
-            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : "",
-            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ""
+            userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
+            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
+            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
           },
           dataType: 'json',
           success: function(s) {
@@ -360,7 +360,7 @@ $(function() {
     addNewMark: function(coordinates, vid_id, callback) {
       var _ref, _ref1, _ref2;
 
-      if ((coordinates != null) && (vid_id != null) && (((_ref = window.user) != null ? _ref.id : void 0) != null) && (((_ref1 = window.user) != null ? _ref1.login : void 0) != null) && (((_ref2 = window.user) != null ? _ref2.hash : void 0) != null)) {
+      if ((coordinates != null) && (vid_id != null)) {
         return $.ajax({
           url: 'index.php',
           type: 'GET',
@@ -368,10 +368,10 @@ $(function() {
             action: 'addNewMark',
             lat: coordinates[0],
             lon: coordinates[1],
-            userid: window.user.id,
-            login: window.user.login,
-            hash: window.user.hash,
-            vid: vid_id
+            vid: vid_id,
+            userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
+            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
+            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
           },
           dataType: 'json',
           success: function(s) {
@@ -392,16 +392,53 @@ $(function() {
     removeMark: function(uuid, callback) {
       var _ref, _ref1, _ref2;
 
-      if ((uuid != null) && (((_ref = window.user) != null ? _ref.id : void 0) != null) && (((_ref1 = window.user) != null ? _ref1.login : void 0) != null) && (((_ref2 = window.user) != null ? _ref2.hash : void 0) != null)) {
+      if (uuid != null) {
         return $.ajax({
           url: 'index.php',
           type: 'GET',
           data: {
             action: 'removeMark',
             uuid: uuid,
-            userid: window.user.id,
-            login: window.user.login,
-            hash: window.user.hash
+            userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
+            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
+            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
+          },
+          dataType: 'json',
+          success: function(s) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.info(s);
+            }
+            if (s.res != null) {
+              if (callback != null) {
+                return callback(s.res);
+              }
+            }
+          },
+          error: function(XMLHttpRequest, textStatus, error) {
+            if (typeof console !== "undefined" && console !== null) {
+              return console.log(XMLHttpRequest, textStatus, error);
+            }
+          }
+        });
+      }
+    },
+    saveMark: function(uuid, values, callback) {
+      var _ref, _ref1, _ref2;
+
+      if ((uuid != null) && (values != null)) {
+        return $.ajax({
+          url: 'index.php',
+          type: 'GET',
+          data: {
+            action: 'saveMark',
+            uuid: uuid,
+            agent: values.agent,
+            info: values.info,
+            date1: values.date1,
+            date2: values.date2,
+            userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
+            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
+            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
           },
           dataType: 'json',
           success: function(s) {
@@ -498,6 +535,19 @@ $(function() {
                   return map.geoObjects.remove(placemark);
                 } else {
                   return alert('К сожалению, не удалось удалить метку');
+                }
+              });
+            });
+            $('.mark-save-link').on('click', function(e) {
+              e.preventDefault();
+              return $(_this).snMapsAjax('saveMark', uuid, {
+                agent: $('#agent').val(),
+                info: $('#info').val(),
+                date1: $('#date1').val(),
+                date2: $('#date2').val()
+              }, function(response) {
+                if (!response) {
+                  return alert('К сожалению, не удалось сохранить метку');
                 }
               });
             });

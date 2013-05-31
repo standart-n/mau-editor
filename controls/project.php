@@ -26,6 +26,9 @@ public static function engine() {
 		case "removeMark":
 			return self::removeMark();
 		break;
+		case "saveMark":
+			return self::saveMark();
+		break;
 	}
 	return false;
 }
@@ -66,6 +69,12 @@ public static function addNewMark($j=array()) {
 
 public static function removeMark($j=array()) {
 	$j['res']=editor::removeMark();
+	$j['tm']=time();	
+	return $j;
+}
+
+public static function saveMark($j=array()) {
+	$j['res']=editor::saveMark();
 	$j['tm']=time();	
 	return $j;
 }

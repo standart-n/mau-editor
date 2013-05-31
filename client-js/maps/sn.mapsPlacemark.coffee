@@ -74,6 +74,20 @@ $ ->
 									alert 'К сожалению, не удалось удалить метку'
 							# map.destroy()
 
+						$('.mark-save-link').on 'click', (e) ->
+							e.preventDefault()
+							# alert $('#agent').val()
+							# alert $('#date1').val()
+							$(_this).snMapsAjax 'saveMark', uuid, 
+								agent: 			$('#agent').val()
+								info: 			$('#info').val()
+								date1: 			$('#date1').val()
+								date2: 			$('#date2').val() 
+							, (response) ->
+								if !response
+									alert 'К сожалению, не удалось сохранить метку'
+
+
 						$('.balloon-close').on 'click', (e) ->
 							e.preventDefault()
 							balloon.close()

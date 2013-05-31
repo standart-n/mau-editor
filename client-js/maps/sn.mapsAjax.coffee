@@ -31,9 +31,9 @@ $ ->
 					data:						
 						action: 		'getBalloonContent'
 						uuid: 			uuid
-						id: 			if window.user?.id? 		then window.user.id 		else ""
-						login: 			if window.user?.login? 		then window.user.login 		else ""
-						hash: 			if window.user?.hash? 		then window.user.hash 		else ""
+						userid: 		if window.user?.id? 	then window.user.id 	else ''
+						login: 			if window.user?.login? 	then window.user.login 	else ''
+						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
 					dataType: 'json'
 					success: (s) ->
 						console.info s if console?
@@ -47,7 +47,7 @@ $ ->
 		# делаем запрос к серверу, чтобы создать новую метку
 		addNewMark: (coordinates, vid_id, callback) ->
 
-			if coordinates? and vid_id? and window.user?.id? and window.user?.login? and window.user?.hash?
+			if coordinates? and vid_id?
 				$.ajax
 					url: 'index.php'
 					type: 'GET'
@@ -55,10 +55,10 @@ $ ->
 						action: 		'addNewMark'
 						lat: 			coordinates[0]
 						lon: 			coordinates[1]
-						userid: 		window.user.id
-						login: 			window.user.login
-						hash: 			window.user.hash
 						vid: 			vid_id
+						userid: 		if window.user?.id? 	then window.user.id 	else ''
+						login: 			if window.user?.login? 	then window.user.login 	else ''
+						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
 					dataType: 'json'
 					success: (s) ->
 						# console.info s if console?
@@ -72,16 +72,43 @@ $ ->
 		# запрос на удаление метки
 		removeMark: (uuid, callback) ->
 
-			if uuid? and window.user?.id? and window.user?.login? and window.user?.hash?
+			if uuid?
 				$.ajax
 					url: 'index.php'
 					type: 'GET'
 					data:						
 						action: 		'removeMark'
 						uuid: 			uuid
-						userid: 		window.user.id
-						login: 			window.user.login
-						hash: 			window.user.hash
+						userid: 		if window.user?.id? 	then window.user.id 	else ''
+						login: 			if window.user?.login? 	then window.user.login 	else ''
+						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
+					dataType: 'json'
+					success: (s) ->
+						console.info s if console?
+						if s.res?
+							callback(s.res) if callback?
+	
+					error: (XMLHttpRequest, textStatus, error) ->
+						console.log XMLHttpRequest, textStatus, error if console?
+
+
+		# запрос на сохранение метки
+		saveMark: (uuid, values, callback) ->
+
+			if uuid? and values?
+				$.ajax
+					url: 'index.php'
+					type: 'GET'
+					data:						
+						action: 		'saveMark'
+						uuid: 			uuid
+						agent:			values.agent
+						info:			values.info
+						date1:			values.date1
+						date2:			values.date2
+						userid: 		if window.user?.id? 	then window.user.id 	else ''
+						login: 			if window.user?.login? 	then window.user.login 	else ''
+						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
 					dataType: 'json'
 					success: (s) ->
 						console.info s if console?
