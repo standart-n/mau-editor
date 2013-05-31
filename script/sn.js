@@ -274,15 +274,14 @@ $(function() {
             point = points[i];
             if (point.POINT != null) {
               placemarks[i] = $(_this).snMapsPlacemark(ymaps, point);
+              map.geoObjects.add(placemarks[i]);
             }
           }
-          clusterer.add(placemarks);
-          clusterer.options.set({
+          return clusterer.options.set({
             gridSize: 100,
             maxZoom: 16,
             minClusterSize: 2
           });
-          return map.geoObjects.add(clusterer);
         });
       });
     }
@@ -341,9 +340,12 @@ $(function() {
           },
           dataType: 'json',
           success: function(s) {
-            if ((s.content != null) && (s.signin != null)) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.info(s);
+            }
+            if ((s.content != null) && (s.agents != null) && (s.signin != null)) {
               if (callback != null) {
-                return callback(s.content, s.signin);
+                return callback(s);
               }
             }
           },
@@ -373,6 +375,39 @@ $(function() {
           },
           dataType: 'json',
           success: function(s) {
+            if (s.res != null) {
+              if (callback != null) {
+                return callback(s.res);
+              }
+            }
+          },
+          error: function(XMLHttpRequest, textStatus, error) {
+            if (typeof console !== "undefined" && console !== null) {
+              return console.log(XMLHttpRequest, textStatus, error);
+            }
+          }
+        });
+      }
+    },
+    removeMark: function(uuid, callback) {
+      var _ref, _ref1, _ref2;
+
+      if ((uuid != null) && (((_ref = window.user) != null ? _ref.id : void 0) != null) && (((_ref1 = window.user) != null ? _ref1.login : void 0) != null) && (((_ref2 = window.user) != null ? _ref2.hash : void 0) != null)) {
+        return $.ajax({
+          url: 'index.php',
+          type: 'GET',
+          data: {
+            action: 'removeMark',
+            uuid: uuid,
+            userid: window.user.id,
+            login: window.user.login,
+            hash: window.user.hash
+          },
+          dataType: 'json',
+          success: function(s) {
+            if (typeof console !== "undefined" && console !== null) {
+              console.info(s);
+            }
             if (s.res != null) {
               if (callback != null) {
                 return callback(s.res);
@@ -436,30 +471,47 @@ $(function() {
 
       _this = this;
       placemark.events.add('balloonopen', function(e) {
-        var uuid;
+        var balloon, map, uuid;
 
         placemark = e.get('target');
+        balloon = e.get('balloon');
+        map = placemark.getMap();
         uuid = placemark.properties.get('uuid').toString();
-        return $(_this).snMapsAjax('getBalloonContent', uuid, function(balloon, signin) {
-          var _ref, _ref1, _ref2;
+        return $(_this).snMapsAjax('getBalloonContent', uuid, function(res) {
+          var _ref, _ref1, _ref2, _ref3;
 
-          if (signin && ((_ref = window.user) != null ? (_ref1 = _ref.id) != null ? _ref1.toString() : void 0 : void 0) === ((_ref2 = balloon.USER_ID) != null ? _ref2.toString() : void 0)) {
-            alert(window.user.id.toString() + ' - ' + balloon.USER_ID.toString());
+          if (res.signin && ((_ref = window.user) != null ? (_ref1 = _ref.id) != null ? _ref1.toString() : void 0 : void 0) === ((_ref2 = res.content) != null ? (_ref3 = _ref2.USER_ID) != null ? _ref3.toString() : void 0 : void 0)) {
             placemark.options.set('balloonMinWidth', 500);
             placemark.options.set('balloonMinHeight', 300);
             placemark.properties.set('balloonContentBody', new EJS({
               url: 'view/balloonContentEditor.html',
               ext: '.html',
-              type: '['
-            }).render(balloon));
+              type: '[',
+              cache: false
+            }).render(res));
             $('#dp1').datepicker();
-            return $('#dp2').datepicker();
+            $('#dp2').datepicker();
+            $('.mark-delete-link').on('click', function(e) {
+              e.preventDefault();
+              return $(_this).snMapsAjax('removeMark', uuid, function(response) {
+                if (response) {
+                  return map.geoObjects.remove(placemark);
+                } else {
+                  return alert('К сожалению, не удалось удалить метку');
+                }
+              });
+            });
+            return $('.balloon-close').on('click', function(e) {
+              e.preventDefault();
+              return balloon.close();
+            });
           } else {
             return placemark.properties.set('balloonContentBody', new EJS({
               url: 'view/balloonContent.html',
               ext: '.html',
-              type: '['
-            }).render(balloon));
+              type: '[',
+              cache: false
+            }).render(res));
           }
         });
       });
@@ -593,7 +645,10 @@ $(function() {
               $('#signin-form').hide();
               $('.signin-exit-link').parent('li').show();
               $('.signin-enter-link').parent('li').hide();
-              return $('.signin-alert-success').show();
+              $('.signin-alert-success').show();
+              return setTimeout(function() {
+                return $('#modal-signin').modal('hide');
+              }, 500);
             } else {
               $('.signin-alert-error').show();
               return $('#signin-password').val('');

@@ -51,22 +51,37 @@ $ ->
 			placemark.events.add 'balloonopen', (e) ->
 
 				placemark = e.get('target')
+				balloon = e.get('balloon')
+				map = placemark.getMap()
 				uuid = placemark.properties.get('uuid').toString()
 
-				$(_this).snMapsAjax 'getBalloonContent', uuid, (balloon, signin) ->
+				$(_this).snMapsAjax 'getBalloonContent', uuid, (res) ->
 
-					if signin and window.user?.id?.toString() is balloon.USER_ID?.toString()
-						alert window.user.id.toString() + ' - ' + balloon.USER_ID.toString()
+					if res.signin and window.user?.id?.toString() is res.content?.USER_ID?.toString()
 						placemark.options.set 'balloonMinWidth', 500
 						placemark.options.set 'balloonMinHeight', 300
 						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[').render(balloon)
+							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: off).render(res)
 						$('#dp1').datepicker()
 						$('#dp2').datepicker()
 
+						$('.mark-delete-link').on 'click', (e) ->
+							e.preventDefault()
+							$(_this).snMapsAjax 'removeMark', uuid, (response) ->
+								if response
+									map.geoObjects.remove(placemark)
+								else
+									alert 'К сожалению, не удалось удалить метку'
+							# map.destroy()
+
+						$('.balloon-close').on 'click', (e) ->
+							e.preventDefault()
+							balloon.close()
+							#placemark.
+
 					else
 						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[').render(balloon)
+							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: off).render(res)
 
 			placemark
 

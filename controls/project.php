@@ -23,6 +23,9 @@ public static function engine() {
 		case "addNewMark":
 			return self::addNewMark();
 		break;
+		case "removeMark":
+			return self::removeMark();
+		break;
 	}
 	return false;
 }
@@ -49,6 +52,7 @@ public static function getPoints($j=array()) {
 
 public static function getBalloonContent($j=array()) {
 	$j['content']=editor::getBalloonContent();
+	$j['agents']=editor::getAgents();
 	$j['tm']=time();	
 	if (signin::check()) { $j['signin']=true; } else { $j['signin']=false; }
 	return $j;
@@ -56,6 +60,12 @@ public static function getBalloonContent($j=array()) {
 
 public static function addNewMark($j=array()) {
 	$j['res']=editor::addNewMark();
+	$j['tm']=time();	
+	return $j;
+}
+
+public static function removeMark($j=array()) {
+	$j['res']=editor::removeMark();
 	$j['tm']=time();	
 	return $j;
 }

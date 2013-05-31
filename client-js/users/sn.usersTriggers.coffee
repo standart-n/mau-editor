@@ -17,6 +17,10 @@ $ ->
 							$('.signin-exit-link').parent('li').show()
 							$('.signin-enter-link').parent('li').hide()
 							$('.signin-alert-success').show()
+							setTimeout () ->
+								$('#modal-signin').modal('hide')
+							, 500
+
 						else
 							$('.signin-alert-error').show()
 							$('#signin-password').val('')

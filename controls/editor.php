@@ -23,12 +23,22 @@ public static function getPoints($j=array()) {
 public static function getBalloonContent($j=array()) {
 
 	if (query(sql::getBalloonContent(url::$uuid),$m)) {
+		foreach ($m[0] as $key => $value) {
+			$j[$key] = toUTF($value);
+		}
+		return $j;
+	}
+	return false;
+}
+
+public static function getAgents($j=array()) {
+	if (query(sql::getAgents(),$m)) {
 		for ($i=0;$i<sizeof($m);$i++) {
 			foreach ($m[$i] as $key => $value) {
 				$j[$i][$key] = toUTF($value);
 			}
 		}
-		return $j[0];
+		return $j;
 	}
 	return false;
 }
@@ -54,6 +64,19 @@ public static function addNewMark($j=array()) {
 					}
 				}
 			}
+		}
+	}
+	return false;
+}
+
+
+public static function removeMark($j=array()) {
+
+	if (signin::check()) {
+		if ((isset(url::$uuid)) and (isset(url::$userid))) {
+			if (query(sql::removeMark(url::$uuid))) {
+				return true;
+			}			
 		}
 	}
 	return false;

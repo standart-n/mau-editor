@@ -73,8 +73,13 @@ $ ->
 							# создаем метку
 							placemarks[i] = $(_this).snMapsPlacemark ymaps, point
 
+							# добавляем объекты на карты в обход кластеризатора
+							# чтобы была возможность очень просто удалить любую метку
+							map.geoObjects.add(placemarks[i])
+
+
 					# заполняем кластеризатор метками
-					clusterer.add placemarks
+					#clusterer.add placemarks
 
 					# настройки кластеризатора
 					clusterer.options.set
@@ -83,7 +88,7 @@ $ ->
 						minClusterSize: 2 		# Минимальное количество объектов, образующих кластер.
 					
 					# добавляем кластеризатор на карту
-					map.geoObjects.add(clusterer)
+					#map.geoObjects.add(clusterer)
 
 
 
