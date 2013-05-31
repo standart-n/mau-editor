@@ -63,8 +63,8 @@ public static function removeMark($id,$s="") {
 	return $s;
 }
 
-public static function saveMark($id,$agent,$info,$date1,$date2,$s="") {
-	$s.="update bad_roads set AGENT_D\$UUID = '".$agent."', INFO = '".$info."', PERIOD_BEG = '".$date1."', PLAN_PERIOD_END = '".$date2."' where D\$UUID='".$id."' ";
+public static function saveMark($id,$agent,$info,$date1,$date2,$lat,$lon,$s="") {
+	$s.="update bad_roads set AGENT_D\$UUID = '".$agent."', INFO = '".$info."', PERIOD_BEG = '".$date1."', PLAN_PERIOD_END = '".$date2."', POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' ";
 	return $s;
 }
 

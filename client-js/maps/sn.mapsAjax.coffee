@@ -106,6 +106,8 @@ $ ->
 						info:			values.info
 						date1:			values.date1
 						date2:			values.date2
+						lat:			values.lat
+						lon:			values.lon
 						userid: 		if window.user?.id? 	then window.user.id 	else ''
 						login: 			if window.user?.login? 	then window.user.login 	else ''
 						hash: 			if window.user?.hash? 	then window.user.hash 	else ''

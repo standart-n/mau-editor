@@ -86,8 +86,8 @@ public static function removeMark($j=array()) {
 public static function saveMark($j=array()) {
 
 	if (signin::check()) {
-		if ((isset(url::$uuid)) and (isset(url::$agent)) and (isset(url::$date1)) and (isset(url::$date2)) ) {
-			if (query(sql::saveMark(url::$uuid,url::$agent,url::$info,url::$date1,url::$date2))) {
+		if ((isset(url::$uuid)) and (isset(url::$agent)) and (isset(url::$date1)) and (isset(url::$date2)) and (isset(url::$lat)) and (isset(url::$lon))) {
+			if (query(sql::saveMark(url::$uuid,url::$agent,url::$info,url::$date1,url::$date2,url::$lat,url::$lon))) {
 				return true;
 			}			
 		}

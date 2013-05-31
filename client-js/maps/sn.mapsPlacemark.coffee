@@ -29,9 +29,9 @@ $ ->
 			# заголовок подсказки на метке
 			hintContent: if point.PLAN_PERIOD_END? then "до <b>#{point.PLAN_PERIOD_END.toString()}</b>"
 			# заголовок балуна
-			balloonContentHeader: "<div class=\"balloonContentHeader\" data-id=\"#{point.D$UUID}\">#{point.SVID}</div>"
+			balloonContentHeader: "<div>#{point.SVID}</div>"
 			# содержимое балуна
-			balloonContentBody: "<div class=\"balloonContentBody\" data-id=\"#{point.D$UUID}\"></div>"
+			balloonContentBody: ""
 			# записываем uuid
 			uuid: point.D$UUID.toString()
 
@@ -58,8 +58,9 @@ $ ->
 				$(_this).snMapsAjax 'getBalloonContent', uuid, (res) ->
 
 					if res.signin and window.user?.id?.toString() is res.content?.USER_ID?.toString()
+						res.coordinates = $this.coordinates res.content
 						placemark.options.set 'balloonMinWidth', 500
-						placemark.options.set 'balloonMinHeight', 300
+						placemark.options.set 'balloonMinHeight', 400
 						placemark.properties.set 'balloonContentBody',
 							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: off).render(res)
 						$('#dp1').datepicker()
@@ -83,6 +84,8 @@ $ ->
 								info: 			$('#info').val()
 								date1: 			$('#date1').val()
 								date2: 			$('#date2').val() 
+								lat:			$('#lat').val()
+								lon:			$('#lon').val()
 							, (response) ->
 								if !response
 									alert 'К сожалению, не удалось сохранить метку'

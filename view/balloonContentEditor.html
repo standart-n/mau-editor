@@ -29,6 +29,18 @@
     </label>
   </div>
   <div class="control-group">
+    <label for="lat" class="control-label">Широта</label>
+    <div class="controls">
+      <input id="lat" type="text" value="[%= coordinates[0] %]" placeholder="Широта"/>
+    </div>
+  </div>
+  <div class="control-group">
+    <label for="lon" class="control-label">Долгота</label>
+    <div class="controls">
+      <input id="lon" type="text" value="[%= coordinates[1] %]" placeholder="Долгота"/>
+    </div>
+  </div>
+  <div class="control-group">
     <label class="control-label">Комментарий:</label>
     <label class="controls">
       <textarea id="info" rows="3">[%= content.INFO %]</textarea>

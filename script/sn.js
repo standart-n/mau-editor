@@ -436,6 +436,8 @@ $(function() {
             info: values.info,
             date1: values.date1,
             date2: values.date2,
+            lat: values.lat,
+            lon: values.lon,
             userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
             login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
             hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
@@ -491,8 +493,8 @@ $(function() {
     properties: function(point) {
       return {
         hintContent: point.PLAN_PERIOD_END != null ? "до <b>" + (point.PLAN_PERIOD_END.toString()) + "</b>" : void 0,
-        balloonContentHeader: "<div class=\"balloonContentHeader\" data-id=\"" + point.D$UUID + "\">" + point.SVID + "</div>",
-        balloonContentBody: "<div class=\"balloonContentBody\" data-id=\"" + point.D$UUID + "\"></div>",
+        balloonContentHeader: "<div>" + point.SVID + "</div>",
+        balloonContentBody: "",
         uuid: point.D$UUID.toString()
       };
     },
@@ -518,8 +520,9 @@ $(function() {
           var _ref, _ref1, _ref2, _ref3;
 
           if (res.signin && ((_ref = window.user) != null ? (_ref1 = _ref.id) != null ? _ref1.toString() : void 0 : void 0) === ((_ref2 = res.content) != null ? (_ref3 = _ref2.USER_ID) != null ? _ref3.toString() : void 0 : void 0)) {
+            res.coordinates = $this.coordinates(res.content);
             placemark.options.set('balloonMinWidth', 500);
-            placemark.options.set('balloonMinHeight', 300);
+            placemark.options.set('balloonMinHeight', 400);
             placemark.properties.set('balloonContentBody', new EJS({
               url: 'view/balloonContentEditor.html',
               ext: '.html',
@@ -544,7 +547,9 @@ $(function() {
                 agent: $('#agent').val(),
                 info: $('#info').val(),
                 date1: $('#date1').val(),
-                date2: $('#date2').val()
+                date2: $('#date2').val(),
+                lat: $('#lat').val(),
+                lon: $('#lon').val()
               }, function(response) {
                 if (!response) {
                   return alert('К сожалению, не удалось сохранить метку');
