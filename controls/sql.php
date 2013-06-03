@@ -10,7 +10,7 @@ function __construct() {
 
 public static function getPoints($s="") {
 	$s.="select ";
-	$s.="POINT, D\$UUID, VID_ID, SVID, PLAN_PERIOD_END ";
+	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END ";
 	$s.="from VW_BAD_ROADS ";
 	$s.="where status = 0 and PERIOD_END is null";
 	return $s;
@@ -52,19 +52,24 @@ public static function editNewMark($id,$lat,$lon,$s="") {
 
 public static function getPointById($uuid,$s="") {
 	$s.="select ";
-	$s.="POINT, D\$UUID, VID_ID, SVID, PLAN_PERIOD_END ";
+	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END ";
 	$s.="from VW_BAD_ROADS ";
 	$s.="where status = 0 and D\$UUID = '".$uuid."' and PERIOD_END is null";
 	return $s;
 }
 
-public static function removeMark($id,$s="") {
-	$s.="update bad_roads set status = 1 where D\$UUID='".$id."' ";
+public static function removeMark($userid,$id,$s="") {
+	$s.="update bad_roads set status = 1 where D\$UUID='".$id."' and USER_ID=".$userid." ";
 	return $s;
 }
 
-public static function saveMark($id,$agent,$info,$date1,$date2,$lat,$lon,$s="") {
-	$s.="update bad_roads set AGENT_D\$UUID = '".$agent."', INFO = '".$info."', PERIOD_BEG = '".$date1."', PLAN_PERIOD_END = '".$date2."', POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' ";
+public static function saveMark($userid,$id,$agent,$info,$date1,$date2,$lat,$lon,$s="") {
+	$s.="update bad_roads set AGENT_D\$UUID = '".$agent."', INFO = '".$info."', PERIOD_BEG = '".$date1."', PLAN_PERIOD_END = '".$date2."', POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' and USER_ID=".$userid." ";
+	return $s;
+}
+
+public static function dragMark($userid,$id,$lat,$lon,$s="") {
+	$s.="update bad_roads set POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' and USER_ID=".$userid." ";
 	return $s;
 }
 

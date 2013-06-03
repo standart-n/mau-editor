@@ -444,6 +444,38 @@ $(function() {
           },
           dataType: 'json',
           success: function(s) {
+            if (s.res != null) {
+              if (callback != null) {
+                return callback(s.res);
+              }
+            }
+          },
+          error: function(XMLHttpRequest, textStatus, error) {
+            if (typeof console !== "undefined" && console !== null) {
+              return console.log(XMLHttpRequest, textStatus, error);
+            }
+          }
+        });
+      }
+    },
+    dragMark: function(uuid, coordinates, callback) {
+      var _ref, _ref1, _ref2;
+
+      if ((uuid != null) && (coordinates != null)) {
+        return $.ajax({
+          url: 'index.php',
+          type: 'GET',
+          data: {
+            action: 'dragMark',
+            uuid: uuid,
+            lat: coordinates[0],
+            lon: coordinates[1],
+            userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
+            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
+            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
+          },
+          dataType: 'text',
+          success: function(s) {
             if (typeof console !== "undefined" && console !== null) {
               console.info(s);
             }
@@ -482,6 +514,7 @@ $(function() {
       _this = this;
       placemark = new ymaps.Placemark($this.coordinates(point), $this.properties(point), $this.options(point));
       placemark = $this.onBalloonOpen(placemark);
+      placemark = $this.onDragEnd(placemark);
       return placemark;
     },
     coordinates: function(point) {
@@ -499,10 +532,13 @@ $(function() {
       };
     },
     options: function(point) {
+      var _ref, _ref1, _ref2;
+
       return {
         balloonMinWidth: 350,
         balloonMinHeight: 200,
-        preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon'
+        preset: point.VID_ID === '0' ? 'twirl#workshopIcon' : 'twirl#turnRightIcon',
+        draggable: ((_ref = point.USER_ID) != null ? _ref.toString() : void 0) === ((_ref1 = window.user) != null ? (_ref2 = _ref1.id) != null ? _ref2.toString() : void 0 : void 0) ? true : false
       };
     },
     onBalloonOpen: function(placemark) {
@@ -573,6 +609,23 @@ $(function() {
             }).render(res));
           }
         });
+      });
+      return placemark;
+    },
+    onDragEnd: function(placemark) {
+      var _this;
+
+      _this = this;
+      placemark.events.add('dragend', function(e) {
+        var coordinates, uuid;
+
+        placemark = e.get('target');
+        coordinates = placemark.geometry.getCoordinates();
+        if (coordinates != null) {
+          console.info(coordinates);
+        }
+        uuid = placemark.properties.get('uuid').toString();
+        return $(_this).snMapsAjax('dragMark', uuid, coordinates);
       });
       return placemark;
     }

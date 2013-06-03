@@ -113,12 +113,37 @@ $ ->
 						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
 					dataType: 'json'
 					success: (s) ->
+						# console.info s if console?
+						if s.res?
+							callback(s.res) if callback?
+	
+					error: (XMLHttpRequest, textStatus, error) ->
+						console.log XMLHttpRequest, textStatus, error if console?
+
+		# отправляем на сервер новые координаты метки после перетаскивания
+		dragMark: (uuid, coordinates, callback) ->
+
+			if uuid? and coordinates?
+				$.ajax
+					url: 'index.php'
+					type: 'GET'
+					data:
+						action: 		'dragMark'
+						uuid:			uuid
+						lat: 			coordinates[0]
+						lon: 			coordinates[1]
+						userid: 		if window.user?.id? 	then window.user.id 	else ''
+						login: 			if window.user?.login? 	then window.user.login 	else ''
+						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
+					dataType: 'text'
+					success: (s) ->
 						console.info s if console?
 						if s.res?
 							callback(s.res) if callback?
 	
 					error: (XMLHttpRequest, textStatus, error) ->
 						console.log XMLHttpRequest, textStatus, error if console?
+
 
 
 

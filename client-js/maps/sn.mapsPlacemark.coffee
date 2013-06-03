@@ -9,6 +9,7 @@ $ ->
 			placemark = new ymaps.Placemark $this.coordinates(point), $this.properties(point), $this.options(point)
 
 			placemark = $this.onBalloonOpen(placemark)
+			placemark = $this.onDragEnd(placemark)
 
 			placemark
 
@@ -43,6 +44,8 @@ $ ->
 			balloonMinHeight: 200
 			# иконка метки
 			preset: if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
+
+			draggable: if point.USER_ID?.toString() is window.user?.id?.toString() then on else false
 
 		onBalloonOpen: (placemark) ->
 
@@ -108,6 +111,19 @@ $ ->
 			placemark
 
 
+		onDragEnd: (placemark) ->
+
+			_this = this
+
+			placemark.events.add 'dragend', (e) ->
+
+				placemark = e.get 'target'
+				coordinates = placemark.geometry.getCoordinates()
+				console.info coordinates if coordinates?
+				uuid = placemark.properties.get('uuid').toString()
+				$(_this).snMapsAjax 'dragMark', uuid, coordinates
+
+			placemark
 
 
 	$.fn.snMapsPlacemark = (sn = {}) ->

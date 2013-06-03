@@ -74,7 +74,7 @@ public static function removeMark($j=array()) {
 
 	if (signin::check()) {
 		if ((isset(url::$uuid)) and (isset(url::$userid))) {
-			if (query(sql::removeMark(url::$uuid))) {
+			if (query(sql::removeMark(url::$userid,url::$uuid))) {
 				return true;
 			}			
 		}
@@ -86,8 +86,21 @@ public static function removeMark($j=array()) {
 public static function saveMark($j=array()) {
 
 	if (signin::check()) {
-		if ((isset(url::$uuid)) and (isset(url::$agent)) and (isset(url::$date1)) and (isset(url::$date2)) and (isset(url::$lat)) and (isset(url::$lon))) {
-			if (query(sql::saveMark(url::$uuid,url::$agent,url::$info,url::$date1,url::$date2,url::$lat,url::$lon))) {
+		if ((isset(url::$uuid)) and (isset(url::$userid)) and (isset(url::$agent)) and (isset(url::$date1)) and (isset(url::$date2)) and (isset(url::$lat)) and (isset(url::$lon))) {
+			if (query(sql::saveMark(url::$userid,url::$uuid,url::$agent,url::$info,url::$date1,url::$date2,url::$lat,url::$lon))) {
+				return true;
+			}			
+		}
+	}
+	return false;
+}
+
+
+public static function dragMark($j=array()) {
+
+	if (signin::check()) {
+		if ((isset(url::$uuid)) and (isset(url::$userid)) and (isset(url::$lat)) and (isset(url::$lon))) {
+			if (query(sql::dragMark(url::$userid,url::$uuid,url::$lat,url::$lon))) {
 				return true;
 			}			
 		}
