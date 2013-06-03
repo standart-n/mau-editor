@@ -12,6 +12,7 @@ $(function() {
         options = {};
       }
       $(this).sn('setup', options);
+      $(this).sn('cookies');
       return $(this).sn('start');
     },
     setup: function(options) {
@@ -33,6 +34,20 @@ $(function() {
       $.extend(true, sn, options);
       $(this).data('sn', sn);
       return sn;
+    },
+    cookies: function() {
+      if (window.user == null) {
+        window.user = {};
+      }
+      if ($.cookie('user_id')) {
+        window.user.id = $.cookie('user_id');
+      }
+      if ($.cookie('user_login')) {
+        window.user.login = $.cookie('user_login');
+      }
+      if ($.cookie('user_hash')) {
+        return window.user.hash = $.cookie('user_hash');
+      }
     },
     start: function(options) {
       if (options == null) {
@@ -149,8 +164,8 @@ $(function() {
         if ((levels.one != null) && levels.one[1] !== 'spoiler') {
           switch (levels.one[1]) {
             case 'autoload':
-              $(this).snMaps();
               $(this).snUsers();
+              $(this).snMaps();
               break;
             default:
               if ((levels.two != null) && (levels.three != null)) {
@@ -567,6 +582,7 @@ $(function() {
             }).render(res));
             $('#dp1').datepicker();
             $('#dp2').datepicker();
+            $('#dp3').datepicker();
             $('.mark-delete-link').on('click', function(e) {
               e.preventDefault();
               return $(_this).snMapsAjax('removeMark', uuid, function(response) {
@@ -753,7 +769,7 @@ $(function() {
   var $this, _this;
 
   _this = this;
-  if ($.cookie(('user_login' != null) && $.cookie('user_hash' != null))) {
+  if ($.cookie('user_login' && $.cookie('user_hash'))) {
     $(_this).snUsersAjax('signin', {
       login: $.cookie('user_login'),
       hash: $.cookie('user_hash')

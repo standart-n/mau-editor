@@ -14,18 +14,35 @@
   </div>
   <div class="control-group">
     <label class="control-label">Дата начала:</label>
-    <label class="controls">
+    <label class="controls">[% if (content.PERIOD_BEG !== "undefined" && content.PERIOD_BEG !== null) { %]
       <div id="dp1" data-date="[%= content.PERIOD_BEG %]" data-date-format="dd.mm.yyyy" class="input-append date">
         <input id="date1" size="16" type="text" value="[%= content.PERIOD_BEG %]" class="input-small"/><span class="add-on"><i class="icon-th"></i></span>
-      </div>
+      </div>[% } else { %]
+      <div id="dp1" data-date="[%= date %]" data-date-format="dd.mm.yyyy" class="input-append date">
+        <input id="date1" size="16" type="text" value="" class="input-small"/><span class="add-on"><i class="icon-th"></i></span>
+      </div>[% } %]
     </label>
   </div>
   <div class="control-group">
     <label class="control-label">План дата закр.:</label>
-    <label class="controls">
-      <div id="dp2" data-date="30.05.2013" data-date-format="dd.mm.yyyy" class="input-append date">
+    <label class="controls">[% if (content.PLAN_PERIOD_END !== "undefined" && content.PLAN_PERIOD_END !== null) { %]
+      <div id="dp2" data-date="[%= content.PLAN_PERIOD_END %]" data-date-format="dd.mm.yyyy" class="input-append date">
         <input id="date2" size="16" type="text" value="[%= content.PLAN_PERIOD_END %]" class="input-small"/><span class="add-on"><i class="icon-th"></i></span>
-      </div>
+      </div>[% } else { %]
+      <div id="dp2" data-date="[% date %]" data-date-format="dd.mm.yyyy" class="input-append date">
+        <input id="date2" size="16" type="text" value="" class="input-small"/><span class="add-on"><i class="icon-th"></i></span>
+      </div>[% } %]
+    </label>
+  </div>
+  <div class="control-group">
+    <label class="control-label">Дата закрытия:</label>
+    <label class="controls">[% if (content.PERIOD_END !== "undefined" && content.PERIOD_END !== null) { %]
+      <div id="dp3" data-date="[%= content.PERIOD_END %]" data-date-format="dd.mm.yyyy" class="input-append date">
+        <input id="date3" size="16" type="text" value="[%= content.PERIOD_END %]" class="input-small"/><span class="add-on"><i class="icon-th"></i></span>
+      </div>[% } else { %]
+      <div id="dp3" data-date="[%= date %]" data-date-format="dd.mm.yyyy" class="input-append date">
+        <input id="date3" size="16" type="text" value="" class="input-small"/><span class="add-on"><i class="icon-th"></i></span>
+      </div>[% } %]
     </label>
   </div>
   <div class="control-group">

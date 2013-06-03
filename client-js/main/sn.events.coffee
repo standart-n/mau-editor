@@ -23,10 +23,10 @@ $ ->
 				# парсинг адресной строки
 				
 				levels =
-					one: href.match /#([a-zA-Z0-9\_\-]+)/, '$2'
-					two: href.match /#[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$3'
-					three: href.match /#[a-zA-Z0-9\_\-]+\/[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$4'
-					anchor: href.match /\:([a-zA-Z0-9\_\-]+)/
+					one: 		href.match /#([a-zA-Z0-9\_\-]+)/, '$2'
+					two: 		href.match /#[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$3'
+					three: 		href.match /#[a-zA-Z0-9\_\-]+\/[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$4'
+					anchor: 	href.match /\:([a-zA-Z0-9\_\-]+)/
 
 
 
@@ -44,8 +44,8 @@ $ ->
 
 						when 'autoload'
 
-							$(this).snMaps()
 							$(this).snUsers()
+							$(this).snMaps()
 
 
 						

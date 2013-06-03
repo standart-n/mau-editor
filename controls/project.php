@@ -59,7 +59,8 @@ public static function getPoints($j=array()) {
 public static function getBalloonContent($j=array()) {
 	$j['content']=editor::getBalloonContent();
 	$j['agents']=editor::getAgents();
-	$j['tm']=time();	
+	$j['tm']=time();
+	$j['date']=date('d.m.Y');
 	if (signin::check()) { $j['signin']=true; } else { $j['signin']=false; }
 	return $j;
 }

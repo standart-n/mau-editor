@@ -9,6 +9,7 @@ $ ->
 		init: (options = {}) ->
 
 			$(this).sn 'setup', options
+			$(this).sn 'cookies'
 			$(this).sn 'start'
 
 
@@ -32,6 +33,16 @@ $ ->
 			$(this).data 'sn', sn
 
 			sn
+
+
+		cookies: () ->
+
+			window.user = {} if !window.user?
+
+			window.user.id = 		$.cookie 'user_id' 			if $.cookie 'user_id' 
+			window.user.login = 	$.cookie 'user_login' 		if $.cookie 'user_login'
+			window.user.hash = 		$.cookie 'user_hash' 		if $.cookie 'user_hash' 
+
 
 
 		# запуск приложения

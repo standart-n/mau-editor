@@ -7,6 +7,7 @@ public static $userid;
 public static $agent;
 public static $date1;
 public static $date2;
+public static $date3;
 public static $login;
 public static $password;
 public static $hash;
@@ -17,6 +18,10 @@ public static $info;
 public static $callback;
 
 function __construct() {
+
+	self::$date1 = '';
+	self::$date2 = '';
+	self::$date3 = '';
 
 
 	if (isset($_REQUEST["action"])) {

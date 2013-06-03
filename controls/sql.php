@@ -35,8 +35,9 @@ public static function signin($login,$password,$s="") {
 
 public static function addNewMark($userid,$vid,$s="") {
 	$s.="insert into bad_roads ";
-	$s.="(INSERTSESSION_ID,USER_ID,STATUS,AGENT_D\$UUID,PERIOD_BEG,PLAN_PERIOD_END,PERIOD_END,INFO,VID_ID,POINT) ";
-	$s.="values (0,".$userid.",0,'DF936F7A-1411-864F-A861-601A7B68FE15','30.05.2013','10.06.2013',null,null,".$vid.",'0000') ";
+	$s.="(INSERTSESSION_ID,USER_ID,STATUS,PERIOD_BEG,PLAN_PERIOD_END,PERIOD_END,INFO,VID_ID,POINT) ";
+	//$s.="values (0,".$userid.",0,'DF936F7A-1411-864F-A861-601A7B68FE15',null,null,null,null,".$vid.",'0000') ";
+	$s.="values (0,".$userid.",0,'30.05.2013','10.06.2013',null,null,".$vid.",'0000') ";
 	return $s;
 }
 

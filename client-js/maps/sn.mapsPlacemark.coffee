@@ -68,6 +68,7 @@ $ ->
 							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: off).render(res)
 						$('#dp1').datepicker()
 						$('#dp2').datepicker()
+						$('#dp3').datepicker()
 
 						$('.mark-delete-link').on 'click', (e) ->
 							e.preventDefault()
