@@ -971,6 +971,7 @@
 								viewMode: DPGlobal.modes[this.viewMode].clsName
 							});
 						}
+						this.hide();
 						break;
 				}
 			}
