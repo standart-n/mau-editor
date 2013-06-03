@@ -26,7 +26,10 @@ public static function check($j=array()) {
 		case "hash":
 			if (query(sql::signin(self::$login,self::$hash),$m)) {
 				if (isset($m[0])) {
-					return true;
+					$j['id']=$m[0]->ID;
+					$j['login']=self::$login;
+					$j['hash']=self::$hash;
+					return $j;
 				}
 			}
 		break;

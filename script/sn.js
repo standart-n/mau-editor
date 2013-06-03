@@ -542,7 +542,11 @@ $(function() {
               });
             });
             $('.mark-save-link').on('click', function(e) {
+              var coordinates;
+
               e.preventDefault();
+              coordinates = [$('#lat').val(), $('#lon').val()];
+              placemark.geometry.setCoordinates(coordinates);
               return $(_this).snMapsAjax('saveMark', uuid, {
                 agent: $('#agent').val(),
                 info: $('#info').val(),
@@ -614,18 +618,30 @@ $(function() {
       }
       if (res.signin) {
         if ((res.signin.id != null) && (res.signin.login != null) && (res.signin.hash != null)) {
-          return window.user = {
+          window.user = {
             id: res.signin.id,
             login: res.signin.login,
             hash: res.signin.hash
           };
+          $.cookie('user_id', res.signin.id, {
+            expires: 365
+          });
+          $.cookie('user_login', res.signin.login, {
+            expires: 365
+          });
+          return $.cookie('user_hash', res.signin.hash, {
+            expires: 365
+          });
         }
       }
     },
     exit: function() {
       if (window.user != null) {
-        return window.user = {};
+        window.user = {};
       }
+      $.removeCookie('user_id');
+      $.removeCookie('user_login');
+      return $.removeCookie('user_hash');
     }
   };
   return $.fn.snUsers = function(sn) {
@@ -644,14 +660,15 @@ $(function() {
   var $this;
 
   $this = {
-    signin: function(callback) {
+    signin: function(data, callback) {
       return $.ajax({
         url: 'index.php',
         type: 'GET',
         data: {
           action: 'signin',
-          login: $('#signin-login').val(),
-          password: $('#signin-password').val()
+          login: data.login != null ? data.login : '',
+          password: data.password != null ? data.password : '',
+          hash: data.hash != null ? data.hash : ''
         },
         dataType: 'json',
         success: function(s) {
@@ -680,12 +697,25 @@ $(function() {
 });
 
 $(function() {
-  var $this;
+  var $this, _this;
 
+  _this = this;
+  if ($.cookie(('user_login' != null) && $.cookie('user_hash' != null))) {
+    $(_this).snUsersAjax('signin', {
+      login: $.cookie('user_login'),
+      hash: $.cookie('user_hash')
+    }, function(res) {
+      if (res.signin != null) {
+        $(_this).snUsers('afterSignin', res);
+        if (res.signin) {
+          $('.signin-exit-link').parent('li').show();
+          return $('.signin-enter-link').parent('li').hide();
+        }
+      }
+    });
+  }
   $this = {
     signinFormSubmit: function(options) {
-      var _this;
-
       if (options == null) {
         options = {};
       }
@@ -693,7 +723,10 @@ $(function() {
       $('#signin-form').on('submit', function(e) {
         e.preventDefault();
         $('.signin-alert').hide();
-        return $(_this).snUsersAjax('signin', function(res) {
+        return $(_this).snUsersAjax('signin', {
+          login: $('#signin-login').val(),
+          password: $('#signin-password').val()
+        }, function(res) {
           if (res.signin != null) {
             $(_this).snUsers('afterSignin', res);
             if (res.signin) {

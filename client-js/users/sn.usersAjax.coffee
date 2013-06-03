@@ -4,18 +4,20 @@ $ ->
 	$this =
 
 		# делаем запрос к серверу для авторизации
-		signin: (callback) ->
+		signin: (data, callback) ->
+
 
 			$.ajax 
 				url: 'index.php'
 				type: 'GET'
 				data:
-					action: 'signin'
-					login: $('#signin-login').val()
-					password: $('#signin-password').val()
+					action: 		'signin'
+					login: 			if data.login? 		then data.login 		else ''
+					password: 		if data.password? 	then data.password 		else ''
+					hash: 			if data.hash? 		then data.hash 			else ''
 				dataType: 'json'
 				success: (s) ->
-					#console.info s if console?
+					# console.info s if console?
 					if s?
 						callback(s) if callback?
 				

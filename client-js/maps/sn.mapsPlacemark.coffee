@@ -77,6 +77,11 @@ $ ->
 
 						$('.mark-save-link').on 'click', (e) ->
 							e.preventDefault()
+							coordinates = [
+								$('#lat').val()
+								$('#lon').val()
+							]
+							placemark.geometry.setCoordinates coordinates
 							# alert $('#agent').val()
 							# alert $('#date1').val()
 							$(_this).snMapsAjax 'saveMark', uuid, 
