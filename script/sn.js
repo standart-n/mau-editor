@@ -578,7 +578,7 @@ $(function() {
               url: 'view/balloonContentEditor.html',
               ext: '.html',
               type: '[',
-              cache: false
+              cache: true
             }).render(res));
             $('#dp1').datepicker();
             $('#dp2').datepicker();
@@ -626,7 +626,7 @@ $(function() {
               url: 'view/balloonContent.html',
               ext: '.html',
               type: '[',
-              cache: false
+              cache: true
             }).render(res));
           }
         });

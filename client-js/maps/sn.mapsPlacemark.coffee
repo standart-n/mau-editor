@@ -65,7 +65,7 @@ $ ->
 						placemark.options.set 'balloonMinWidth', 500
 						placemark.options.set 'balloonMinHeight', 400
 						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: off).render(res)
+							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: on).render(res)
 						$('#dp1').datepicker()
 						$('#dp2').datepicker()
 						$('#dp3').datepicker()
@@ -110,7 +110,7 @@ $ ->
 
 					else
 						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: off).render(res)
+							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: on).render(res)
 
 			placemark
 
