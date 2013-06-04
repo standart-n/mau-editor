@@ -69,6 +69,9 @@ $ ->
 						$('#dp1').datepicker()
 						$('#dp2').datepicker()
 						$('#dp3').datepicker()
+						if res.agents?
+							$('#agent').typeahead
+								source: res.agents
 
 						$('.mark-delete-link').on 'click', (e) ->
 							e.preventDefault()

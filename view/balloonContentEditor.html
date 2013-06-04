@@ -1,16 +1,10 @@
 
 <form class="form-horizontal">
-  <div class="control-group"> 
-    <label class="control-label">Исполнитель:</label>
-    <label class="controls">
-      <select id="agent">
-        [% for (var i=0; i<agents.length; i++) { %]
-        [% if (agents[i].D$UUID.toString() == content.AGENT_D$UUID.toString()) { %]	
-        <option value="[%= agents[i].D$UUID %]" selected="selected">[%= agents[i].FULLNAME %]</option>[% } else { %]
-        <option value="[%= agents[i].D$UUID %]">[%= agents[i].FULLNAME %]</option>[% } %]
-        [% } %]
-      </select>
-    </label>
+  <div class="control-group">
+    <label for="agent" class="control-label">Исполнитель:</label>
+    <div class="controls">
+      <input id="agent" type="text" value="[%= content.SAGENT %]" placeholder="Исполнитель"/>
+    </div>
   </div>
   <div class="control-group">
     <label class="control-label">Дата начала:</label>

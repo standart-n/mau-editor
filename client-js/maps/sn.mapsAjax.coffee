@@ -37,7 +37,7 @@ $ ->
 					dataType: 'json'
 					success: (s) ->
 						console.info s if console?
-						if s.content? and s.agents? and s.signin?
+						if s.content? and s.signin?
 							callback(s) if callback?
 	
 					error: (XMLHttpRequest, textStatus, error) ->
@@ -135,7 +135,7 @@ $ ->
 						userid: 		if window.user?.id? 	then window.user.id 	else ''
 						login: 			if window.user?.login? 	then window.user.login 	else ''
 						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
-					dataType: 'text'
+					dataType: 'json'
 					success: (s) ->
 						console.info s if console?
 						if s.res?

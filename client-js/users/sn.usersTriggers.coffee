@@ -2,10 +2,10 @@ $ ->
 
 	_this = this
 
-	if $.cookie 'user_login' and $.cookie 'user_hash'
+	if $.cookie('user_login') and $.cookie('user_hash')
 		$(_this).snUsersAjax 'signin', 
 			login: 		$.cookie 'user_login' 
-			hash: 		$.cookie 'user_hash' 
+			hash: 		$.cookie 'user_hash' 	
 		, (res) ->
 			if res.signin?						
 				$(_this).snUsers 'afterSignin', res

@@ -24,7 +24,13 @@ public static function getBalloonContent($uuid,$s="") {
 }
 
 public static function getAgents($s="") {
-	$s.="select fullname, D\$UUID from vw_agents where status=0 and fullname is not null and fullname <> ''";
+	//$s.="select fullname, D\$UUID from vw_agents where status=0 and fullname is not null and fullname <> ''";
+	$s.="select ";
+	$s.="SAGENT ";
+	$s.="from VW_BAD_ROADS ";
+	$s.="where 1 = 1";
+	$s.="GROUP by SAGENT ";
+	$s.="ORDER by SAGENT ";
 	return $s;
 }
 
@@ -35,9 +41,9 @@ public static function signin($login,$password,$s="") {
 
 public static function addNewMark($userid,$vid,$s="") {
 	$s.="insert into bad_roads ";
-	$s.="(INSERTSESSION_ID,USER_ID,STATUS,PERIOD_BEG,PLAN_PERIOD_END,PERIOD_END,INFO,VID_ID,POINT) ";
+	$s.="(INSERTSESSION_ID,USER_ID,STATUS,SAGENT,PERIOD_BEG,PLAN_PERIOD_END,PERIOD_END,INFO,VID_ID,POINT) ";
 	//$s.="values (0,".$userid.",0,'DF936F7A-1411-864F-A861-601A7B68FE15',null,null,null,null,".$vid.",'0000') ";
-	$s.="values (0,".$userid.",0,'30.05.2013','10.06.2013',null,null,".$vid.",'0000') ";
+	$s.="values (0,".$userid.",0,null,'30.05.2013','10.06.2013',null,null,".$vid.",'0000') ";
 	return $s;
 }
 
@@ -65,7 +71,7 @@ public static function removeMark($userid,$id,$s="") {
 }
 
 public static function saveMark($userid,$id,$agent,$info,$date1,$date2,$lat,$lon,$s="") {
-	$s.="update bad_roads set AGENT_D\$UUID = '".$agent."', INFO = '".$info."', PERIOD_BEG = '".$date1."', PLAN_PERIOD_END = '".$date2."', POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' and USER_ID=".$userid." ";
+	$s.="update bad_roads set SAGENT = '".$agent."', INFO = '".$info."', PERIOD_BEG = '".$date1."', PLAN_PERIOD_END = '".$date2."', POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' and USER_ID=".$userid." ";
 	return $s;
 }
 

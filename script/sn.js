@@ -358,7 +358,7 @@ $(function() {
             if (typeof console !== "undefined" && console !== null) {
               console.info(s);
             }
-            if ((s.content != null) && (s.agents != null) && (s.signin != null)) {
+            if ((s.content != null) && (s.signin != null)) {
               if (callback != null) {
                 return callback(s);
               }
@@ -489,7 +489,7 @@ $(function() {
             login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
             hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
           },
-          dataType: 'text',
+          dataType: 'json',
           success: function(s) {
             if (typeof console !== "undefined" && console !== null) {
               console.info(s);
@@ -583,6 +583,11 @@ $(function() {
             $('#dp1').datepicker();
             $('#dp2').datepicker();
             $('#dp3').datepicker();
+            if (res.agents != null) {
+              $('#agent').typeahead({
+                source: res.agents
+              });
+            }
             $('.mark-delete-link').on('click', function(e) {
               e.preventDefault();
               return $(_this).snMapsAjax('removeMark', uuid, function(response) {
@@ -769,7 +774,7 @@ $(function() {
   var $this, _this;
 
   _this = this;
-  if ($.cookie('user_login' && $.cookie('user_hash'))) {
+  if ($.cookie('user_login') && $.cookie('user_hash')) {
     $(_this).snUsersAjax('signin', {
       login: $.cookie('user_login'),
       hash: $.cookie('user_hash')

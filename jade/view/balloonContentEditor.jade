@@ -1,15 +1,21 @@
 form.form-horizontal
-	.control-group 
-		label.control-label Исполнитель:
-		label.controls
-			select#agent
-				[% for (var i=0; i<agents.length; i++) { %]
-				[% if (agents[i].D$UUID.toString() == content.AGENT_D$UUID.toString()) { %]	
-				option(value = "[%= agents[i].D$UUID %]", selected) [%= agents[i].FULLNAME %]
-				[% } else { %]
-				option(value = "[%= agents[i].D$UUID %]") [%= agents[i].FULLNAME %]
-				[% } %]
-				[% } %]
+
+	//- .control-group 
+	//- 	label.control-label Исполнитель:
+	//- 	label.controls
+	//- 		select#agent
+	//- 			[% for (var i=0; i<agents.length; i++) { %]
+	//- 			[% if (agents[i].D$UUID.toString() == content.AGENT_D$UUID.toString()) { %]	
+	//- 			option(value = "[%= agents[i].D$UUID %]", selected) [%= agents[i].FULLNAME %]
+	//- 			[% } else { %]
+	//- 			option(value = "[%= agents[i].D$UUID %]") [%= agents[i].FULLNAME %]
+	//- 			[% } %]
+	//- 			[% } %]
+
+	.control-group
+		label.control-label(for = "agent") Исполнитель:
+		.controls
+			input#agent(type = "text", value = "[%= content.SAGENT %]", placeholder = "Исполнитель")
 
 	.control-group
 		label.control-label Дата начала:

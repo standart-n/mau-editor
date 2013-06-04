@@ -34,8 +34,10 @@ public static function getBalloonContent($j=array()) {
 public static function getAgents($j=array()) {
 	if (query(sql::getAgents(),$m)) {
 		for ($i=0;$i<sizeof($m);$i++) {
-			foreach ($m[$i] as $key => $value) {
-				$j[$i][$key] = toUTF($value);
+			if (isset($m[$i]->SAGENT)) {
+				if ($m[$i]->SAGENT!='') {
+					$j[] = toUTF($m[$i]->SAGENT);
+				}
 			}
 		}
 		return $j;

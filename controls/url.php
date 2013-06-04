@@ -60,11 +60,11 @@ function __construct() {
 	}
 
 	if (isset($_REQUEST["info"])) {
-		self::$info=trim(strval($_REQUEST["info"]));
+		self::$info=toWin(trim(strval($_REQUEST["info"])));
 	}
 
 	if (isset($_REQUEST["agent"])) {
-		self::$agent=trim(strval($_REQUEST["agent"]));
+		self::$agent=toWin(trim(strval($_REQUEST["agent"])));
 	}
 
 	if (isset($_REQUEST["date1"])) {
@@ -75,6 +75,9 @@ function __construct() {
 		self::$date2=trim(strval($_REQUEST["date2"]));
 	}
 
+	if (isset($_REQUEST["date3"])) {
+		self::$date3=trim(strval($_REQUEST["date3"]));
+	}
 
 
 	if (isset($_REQUEST["vid"])) {
