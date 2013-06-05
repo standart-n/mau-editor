@@ -80,7 +80,7 @@ $ ->
 						placemark.options.set 'balloonMinHeight', 400
 						# рендерим нужный шаблон и загружаем его в балун
 						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: on).render(res)
+							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: off).render(res)
 						# активируем инпуты с выбором даты через календарь
 						$('#dp1').datepicker()
 						$('#dp2').datepicker()
@@ -138,7 +138,7 @@ $ ->
 						# если пользователь не авторизован или эта метка не его
 						# то рендерим обычный шаблон с информацией и показываем внутри балуна
 						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: on).render(res)
+							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: off).render(res)
 
 			# возвращаем объект с меткой
 			placemark
