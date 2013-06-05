@@ -1,6 +1,7 @@
 <?php class sql extends sn {
 	
 public static $id;
+public static $query;
 public static $request;
 public static $response;
 
@@ -19,7 +20,7 @@ public static function getPoints($s="") {
 public static function getBalloonContent($uuid,$s="") {
 	$s.="select * ";
 	$s.="from VW_BAD_ROADS ";
-	$s.="where status = 0 and PERIOD_END is null and D\$UUID = '".$uuid."' ";
+	$s.="where status = 0 and D\$UUID = '".$uuid."' ";
 	return $s;
 }
 
@@ -43,7 +44,8 @@ public static function addNewMark($userid,$vid,$s="") {
 	$s.="insert into bad_roads ";
 	$s.="(INSERTSESSION_ID,USER_ID,STATUS,SAGENT,PERIOD_BEG,PLAN_PERIOD_END,PERIOD_END,INFO,VID_ID,POINT) ";
 	//$s.="values (0,".$userid.",0,'DF936F7A-1411-864F-A861-601A7B68FE15',null,null,null,null,".$vid.",'0000') ";
-	$s.="values (0,".$userid.",0,null,'30.05.2013','10.06.2013',null,null,".$vid.",'0000') ";
+	$s.="values (0,".$userid.",0,null,null,null,null,null,".$vid.",'0000') ";
+	self::$query=$s;
 	return $s;
 }
 
@@ -61,7 +63,7 @@ public static function getPointById($uuid,$s="") {
 	$s.="select ";
 	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END ";
 	$s.="from VW_BAD_ROADS ";
-	$s.="where status = 0 and D\$UUID = '".$uuid."' and PERIOD_END is null";
+	$s.="where status = 0 and D\$UUID = '".$uuid."'";
 	return $s;
 }
 
@@ -70,8 +72,32 @@ public static function removeMark($userid,$id,$s="") {
 	return $s;
 }
 
-public static function saveMark($userid,$id,$agent,$info,$date1,$date2,$lat,$lon,$s="") {
-	$s.="update bad_roads set SAGENT = '".$agent."', INFO = '".$info."', PERIOD_BEG = '".$date1."', PLAN_PERIOD_END = '".$date2."', POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' and USER_ID=".$userid." ";
+public static function saveMark($userid,$id,$agent,$info,$lat,$lon,$s="") {
+	$s.="update bad_roads set ";
+	$s.="SAGENT = '".$agent."', ";
+	$s.="INFO = '".$info."', ";
+
+	if (url::$date1 != '') {
+		$s.="PERIOD_BEG = '".url::$date1."', ";
+	} else {
+		$s.="PERIOD_BEG = null, ";
+	}
+
+	if (url::$date2 != '') {
+		$s.="PLAN_PERIOD_END = '".url::$date2."', ";
+	} else {
+		$s.="PLAN_PERIOD_END = null, ";
+	}
+
+	if (url::$date3 != '') {
+		$s.="PERIOD_END = '".url::$date3."', ";
+	} else {
+		$s.="PERIOD_END = null, ";
+	}
+
+	$s.="POINT='[".$lat.",".$lon."]' ";
+	$s.="where D\$UUID='".$id."' and USER_ID=".$userid." ";
+	self::$query=$s;
 	return $s;
 }
 

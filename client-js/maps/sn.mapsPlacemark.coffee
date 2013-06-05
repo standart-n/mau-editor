@@ -118,7 +118,8 @@ $ ->
 								agent: 			$('#agent').val()
 								info: 			$('#info').val()
 								date1: 			$('#date1').val()
-								date2: 			$('#date2').val() 
+								date2: 			$('#date2').val()
+								date3: 			$('#date3').val()
 								lat:			$('#lat').val()
 								lon:			$('#lon').val()
 							, (response) ->

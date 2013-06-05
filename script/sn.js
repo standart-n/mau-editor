@@ -441,6 +441,7 @@ $(function() {
             info: values.info,
             date1: values.date1,
             date2: values.date2,
+            date3: values.date3,
             lat: values.lat,
             lon: values.lon,
             userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
@@ -604,6 +605,7 @@ $(function() {
                 info: $('#info').val(),
                 date1: $('#date1').val(),
                 date2: $('#date2').val(),
+                date3: $('#date3').val(),
                 lat: $('#lat').val(),
                 lon: $('#lon').val()
               }, function(response) {

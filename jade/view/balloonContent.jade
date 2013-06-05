@@ -3,12 +3,27 @@
 #balloonContent
 	p
 		table.table
+
+			[% if (content.SAGENT !== 'undefined' && content.SAGENT !== null && content.SAGENT !== '') { %]
 			tr				
 				td Исполнитель:
 				td.text-error [%= content.SAGENT %]
+			[% } %]
+
+			[% if (content.PERIOD_BEG !== 'undefined' && content.PERIOD_BEG !== null && content.PERIOD_BEG !== '') { %]
 			tr
 				td Дата начала:
 				td.text-error [%= content.PERIOD_BEG %]
+			[% } %]
+
+			[% if (content.PLAN_PERIOD_END !== 'undefined' && content.PLAN_PERIOD_END !== null && content.PLAN_PERIOD_END !== '') { %]
 			tr
 				td План. дата закр.:
 				td.text-error [%= content.PLAN_PERIOD_END %]
+			[% } %]
+
+			[% if (content.INFO !== 'undefined' && content.INFO !== null && content.INFO !== '') { %]
+			tr
+				td Комментарий:
+				td [%= content.INFO %]
+			[% } %]

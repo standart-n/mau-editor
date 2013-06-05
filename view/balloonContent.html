@@ -1,19 +1,26 @@
 
 <div id="balloonContent">
   <p>
-    <table class="table">
+    <table class="table">[% if (content.SAGENT !== 'undefined' && content.SAGENT !== null && content.SAGENT !== '') { %]
       <tr>				
         <td>Исполнитель:</td>
         <td class="text-error">[%= content.SAGENT %]</td>
-      </tr>
+      </tr>[% } %]
+      [% if (content.PERIOD_BEG !== 'undefined' && content.PERIOD_BEG !== null && content.PERIOD_BEG !== '') { %]
       <tr>
         <td>Дата начала:</td>
         <td class="text-error">[%= content.PERIOD_BEG %]</td>
-      </tr>
+      </tr>[% } %]
+      [% if (content.PLAN_PERIOD_END !== 'undefined' && content.PLAN_PERIOD_END !== null && content.PLAN_PERIOD_END !== '') { %]
       <tr>
         <td>План. дата закр.:</td>
         <td class="text-error">[%= content.PLAN_PERIOD_END %]</td>
-      </tr>
+      </tr>[% } %]
+      [% if (content.INFO !== 'undefined' && content.INFO !== null && content.INFO !== '') { %]
+      <tr>
+        <td>Комментарий:</td>
+        <td>[%= content.INFO %]</td>
+      </tr>[% } %]
     </table>
   </p>
 </div>

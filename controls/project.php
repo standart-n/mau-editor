@@ -67,6 +67,7 @@ public static function getBalloonContent($j=array()) {
 
 public static function addNewMark($j=array()) {
 	$j['res']=editor::addNewMark();
+	$j['sql']=sql::$query;
 	$j['tm']=time();	
 	return $j;
 }
@@ -79,6 +80,7 @@ public static function removeMark($j=array()) {
 
 public static function saveMark($j=array()) {
 	$j['res']=editor::saveMark();
+	$j['sql']=sql::$query;
 	$j['tm']=time();	
 	return $j;
 }

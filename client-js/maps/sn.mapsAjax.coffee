@@ -106,6 +106,7 @@ $ ->
 						info:			values.info
 						date1:			values.date1
 						date2:			values.date2
+						date3:			values.date3
 						lat:			values.lat
 						lon:			values.lon
 						userid: 		if window.user?.id? 	then window.user.id 	else ''
