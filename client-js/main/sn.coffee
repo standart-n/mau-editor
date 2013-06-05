@@ -15,19 +15,18 @@ $ ->
 
 
 		# начальное состояние объекта sn
-
 		setup: (options = {}) ->
 
 			window.sn = {}
 
 			sn =
-				levels:{} # состояние последнего перехода
-				users:{} # состояние пользователя
+				levels:{} 			# состояние последнего перехода
+				users:{} 			# состояние пользователя
 				content:{}
 				conf: {}
-				result:{} # результат последнего ajax запроса
-				theme:{} # тема оформления
-				settings:{} # доп. настройки
+				result:{} 			# результат последнего ajax запроса
+				theme:{} 			# тема оформления
+				settings:{} 		# доп. настройки
 
 			$.extend true, sn, options
 			$(this).data 'sn', sn
@@ -35,6 +34,7 @@ $ ->
 			sn
 
 
+		# запись данных из cookies
 		cookies: () ->
 
 			window.user = {} if !window.user?
@@ -46,16 +46,13 @@ $ ->
 
 
 		# запуск приложения
-
 		start: (options = {}) ->
 
 			# загрузка конфигов
-
 			console.log 'configuration...' if console?
 			$(this).snConf()
 
 			# отображение начальной страницы по событию #autoload
-
 			console.log 'autoload...' if console?
 			$(this).snEvents '#autoload'
 

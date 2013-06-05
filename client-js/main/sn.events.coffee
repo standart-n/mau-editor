@@ -41,24 +41,19 @@ $ ->
 					switch levels.one[1]
 
 						# при начальной загрузке приложения
-
 						when 'autoload'
-
-							$(this).snUsers()
-							$(this).snMaps()
-
-
-						
+							
+							$(this).snUsers()		# работа с пользователями
+							$(this).snMaps()		# работа карты
+			
 						else
 							
 							# в других случаях
-
 							if levels.two? and levels.three?
 
 
 								
 								# если нужно загрузить простую текстовую страницу
-
 								window.sn.part = levels.one[1]
 					
 					$(this).click(levels) # событие click для запуска модулей

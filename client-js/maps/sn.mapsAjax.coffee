@@ -146,7 +146,7 @@ $ ->
 
 
 
-
+	# инициализация
 	$.fn.snMapsAjax = (sn = {}) ->
 		if $this[sn]
 			$this[sn].apply @, Array.prototype.slice.call arguments, 1

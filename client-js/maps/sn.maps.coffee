@@ -1,12 +1,13 @@
+###
+Работа с картой
+###
+
 $ ->
 
 	$this =
 		init: (options = {}) ->
 
 			_this = this
-
-			#триггеры на добавление нового перекопа или объезда
-			#$(this).snMapsTriggers '	addNewMark'
 
 			# ждем когда загрузятся яндекс.карты
 			ymaps.ready () ->
@@ -24,8 +25,8 @@ $ ->
 				map.controls.add 'typeSelector'					# переключение на спутник / гибрид
 				map.controls.add 'mapTools'						# стандартные инструменты
 
-				clusterer = new ymaps.Clusterer()			# создаем кластеризатор
-				placemarks = []								# массив меток
+				clusterer = new ymaps.Clusterer()				# создаем кластеризатор
+				placemarks = []									# массив меток
 
 				# событие при клике на карту для создания новой метки
 				map.events.add 'click', (event) ->
@@ -93,7 +94,7 @@ $ ->
 
 
 
-
+	# инициализация
 	$.fn.snMaps = (sn = {}) ->
 		if $this[sn]
 			$this[sn].apply @, Array.prototype.slice.call arguments, 1

@@ -189,6 +189,11 @@ $(function() {
   };
 });
 
+/*
+Триггеры в приложении
+*/
+
+
 $(function() {
   var $this;
 
@@ -197,26 +202,6 @@ $(function() {
       if (options == null) {
         options = {};
       }
-    },
-    spoiler: function() {
-      if (typeof console !== "undefined" && console !== null) {
-        console.log('trigger: ' + 'spoiler');
-      }
-      return $(this).find('.spoiler-caption').on('click', function(e) {
-        e.preventDefault();
-        if ($(this).hasClass('spoiler-open')) {
-          $(this).removeClass('spoiler-open').addClass('spoiler-close');
-        } else {
-          $(this).removeClass('spoiler-close').addClass('spoiler-open');
-        }
-        return $(this).parent('.spoiler').children('.spoiler-body').each(function() {
-          if ($(this).hasClass('spoiler-open')) {
-            return $(this).removeClass('spoiler-open').addClass('spoiler-close').hide();
-          } else {
-            return $(this).removeClass('spoiler-close').addClass('spoiler-open').show();
-          }
-        });
-      });
     }
   };
   return $.fn.snTriggers = function(sn) {
@@ -230,6 +215,11 @@ $(function() {
     }
   };
 });
+
+/*
+Работа с картой
+*/
+
 
 $(function() {
   var $this;
@@ -519,6 +509,11 @@ $(function() {
   };
 });
 
+/*
+Скрипт который создает и возвращает метку
+*/
+
+
 $(function() {
   var $this;
 
@@ -675,6 +670,11 @@ $(function() {
     }
   };
 });
+
+/*
+Работа с пользователями
+*/
+
 
 $(function() {
   var $this;

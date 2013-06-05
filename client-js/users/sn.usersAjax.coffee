@@ -6,7 +6,6 @@ $ ->
 		# делаем запрос к серверу для авторизации
 		signin: (data, callback) ->
 
-
 			$.ajax 
 				url: 'index.php'
 				type: 'GET'
@@ -26,7 +25,7 @@ $ ->
 
 
 
-
+	# инициализация
 	$.fn.snUsersAjax = (sn = {}) ->
 		if $this[sn]
 			$this[sn].apply @, Array.prototype.slice.call arguments, 1
