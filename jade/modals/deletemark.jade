@@ -1,0 +1,13 @@
+
+div#modal-deletemark.modal.hide.fade
+	div.modal-header
+		button(type="button", class="close", data-dismiss="modal") &times;
+		h3 Подтверждение
+	div.modal-body
+		p
+			Вы уверены, что хотите удалить эту метку со всеми ее данными?
+
+
+	div.modal-footer
+		a.deletemark-delete-link.btn.btn-danger(href = "#", data-answer = "yes", data-dismiss = "modal") Да, конечно
+		a.deletemark-delete-link.btn(href = "#", data-answer = "no", data-dismiss = "modal") Отмена

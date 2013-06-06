@@ -15,6 +15,8 @@ $ ->
 
 			# триггер на открытие балуна
 			placemark = $this.onBalloonOpen(placemark)
+			# триггер на начало перетаскивания
+			placemark = $this.onDragStart(placemark)
 			# триггер на конец перетаскивания
 			placemark = $this.onDragEnd(placemark)
 
@@ -110,15 +112,26 @@ $ ->
 
 						# вешаем триггер на кнопку удаления метки
 						$('.mark-delete-link').on 'click', (e) ->
+
 							e.preventDefault()
-							# делаем запрос к серверу на удаление
-							$(_this).snMapsAjax 'removeMark', uuid, (response) ->
-								if response
-									# при успехе удаляем метку с карты
-									map.geoObjects.remove(placemark)
-								else
-									alert 'К сожалению, не удалось удалить метку'
-							# map.destroy()
+							# вызываем модальное окно
+							$('#modal-deletemark').modal()
+							# убираем с кнопок предыдущие триггеры
+							$('.deletemark-delete-link').off 'click'
+							# ставим новый триггер с новыми координатами
+							$('.deletemark-delete-link').on 'click', (e) ->
+
+								e.preventDefault()
+								# если пользователь ответил положительно
+								if $(this).data('answer') is 'yes'
+
+									# делаем запрос к серверу на удаление
+									$(_this).snMapsAjax 'removeMark', uuid, (response) ->
+										if response
+											# при успехе удаляем метку с карты
+											map.geoObjects.remove(placemark)
+										else
+											alert 'К сожалению, не удалось удалить метку'
 
 						# триггер на сохранение данных внутри метки
 						$('.mark-save-link').on 'click', (e) ->
@@ -168,6 +181,21 @@ $ ->
 			placemark
 
 
+		# триггер на начало перетаскивания
+		onDragStart: (placemark) ->
+
+			_this = this
+
+			placemark.events.add 'dragstart', (e) ->
+
+				# берем текущие координаты и записываем их в параметры объекта
+				placemark = e.get 'target'
+				coordinates = placemark.geometry.getCoordinates()
+				placemark.properties.set 'lastCoordinates', coordinates
+
+			placemark
+
+
 		# триггер на окончание перетаскивания
 		onDragEnd: (placemark) ->
 
@@ -175,12 +203,29 @@ $ ->
 
 			placemark.events.add 'dragend', (e) ->
 
-				# берем новые координаты и отправляем их на сервер				
 				placemark = e.get 'target'
-				coordinates = placemark.geometry.getCoordinates()
-				console.info coordinates if coordinates?
-				uuid = placemark.properties.get('uuid').toString()
-				$(_this).snMapsAjax 'dragMark', uuid, coordinates
+
+				# вызываем модальное окно
+				$('#modal-dragmark').modal()
+				# убираем с кнопок предыдущие триггеры
+				$('.dragmark-drag-link').off 'click'
+				# ставим новый триггер с новыми координатами
+				$('.dragmark-drag-link').on 'click', (e) ->
+
+					e.preventDefault()
+					# если пользователь ответил положительно
+					if $(this).data('answer') is 'yes'
+
+						uuid = placemark.properties.get('uuid').toString()
+						# берем новые координаты и отправляем их на сервер				
+						coordinates = placemark.geometry.getCoordinates()
+
+						$(_this).snMapsAjax 'dragMark', uuid, coordinates
+
+					else
+
+						lastCoordinates = placemark.properties.get('lastCoordinates')
+						placemark.geometry.setCoordinates lastCoordinates
 
 			placemark
 

@@ -72,17 +72,25 @@
         </p>
       </div>
     </div>
-    <div id="modal-newmark" class="modal hide fade">
+    <div id="modal-deletemark" class="modal hide fade">
       <div class="modal-header">
         <button type="button" data-dismiss="modal" class="close">&times;</button>
-        <h3>Создать объект?</h3>
+        <h3>Подтверждение</h3>
       </div>
       <div class="modal-body">
-        <p>
-          <div id="newmark-toolbar" class="btn-group"><a href="#" data-vid="0" data-dismiss="modal" class="newmark-add-link btn">Сделать перекоп</a><a href="#" data-vid="1" data-dismiss="modal" class="newmark-add-link btn">Сделать объезд</a></div>
-        </p>
+        <p>Вы уверены, что хотите удалить эту метку со всеми ее данными?</p>
       </div>
-      <div class="modal-footer"><a href="#" data-dismiss="modal" class="btn">Закрыть</a></div>
+      <div class="modal-footer"><a href="#" data-answer="yes" data-dismiss="modal" class="deletemark-delete-link btn btn-danger">Да, конечно</a><a href="#" data-answer="no" data-dismiss="modal" class="deletemark-delete-link btn">Отмена</a></div>
+    </div>
+    <div id="modal-dragmark" class="modal hide fade">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" class="close">&times;</button>
+        <h3>Подтверждение</h3>
+      </div>
+      <div class="modal-body">
+        <p>Вы действительно хотите перетащить данную метку на новую позицию?</p>
+      </div>
+      <div class="modal-footer"><a href="#" data-answer="yes" data-dismiss="modal" class="dragmark-drag-link btn btn-success">Да, конечно</a><a href="#" data-answer="no" data-dismiss="modal" class="dragmark-drag-link btn">Отмена</a></div>
     </div>
     <div id="js">
       <script src="http://api-maps.yandex.ru/2.0/?load=package.full&amp;lang=ru-RU" type="text/javascript"></script>

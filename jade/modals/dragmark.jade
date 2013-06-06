@@ -1,0 +1,13 @@
+
+div#modal-dragmark.modal.hide.fade
+	div.modal-header
+		button(type="button", class="close", data-dismiss="modal") &times;
+		h3 Подтверждение
+	div.modal-body
+		p
+			Вы действительно хотите перетащить данную метку на новую позицию?
+
+
+	div.modal-footer
+		a.dragmark-drag-link.btn.btn-success(href = "#", data-answer = "yes", data-dismiss = "modal") Да, конечно
+		a.dragmark-drag-link.btn(href = "#", data-answer = "no", data-dismiss = "modal") Отмена

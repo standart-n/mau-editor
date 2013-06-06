@@ -630,6 +630,7 @@ $(function() {
       _this = this;
       placemark = new ymaps.Placemark($this.coordinates(point), $this.properties(point), $this.options(point));
       placemark = $this.onBalloonOpen(placemark);
+      placemark = $this.onDragStart(placemark);
       placemark = $this.onDragEnd(placemark);
       return placemark;
     },
@@ -711,11 +712,18 @@ $(function() {
             }
             $('.mark-delete-link').on('click', function(e) {
               e.preventDefault();
-              return $(_this).snMapsAjax('removeMark', uuid, function(response) {
-                if (response) {
-                  return map.geoObjects.remove(placemark);
-                } else {
-                  return alert('К сожалению, не удалось удалить метку');
+              $('#modal-deletemark').modal();
+              $('.deletemark-delete-link').off('click');
+              return $('.deletemark-delete-link').on('click', function(e) {
+                e.preventDefault();
+                if ($(this).data('answer') === 'yes') {
+                  return $(_this).snMapsAjax('removeMark', uuid, function(response) {
+                    if (response) {
+                      return map.geoObjects.remove(placemark);
+                    } else {
+                      return alert('К сожалению, не удалось удалить метку');
+                    }
+                  });
                 }
               });
             });
@@ -763,20 +771,40 @@ $(function() {
       });
       return placemark;
     },
+    onDragStart: function(placemark) {
+      var _this;
+
+      _this = this;
+      placemark.events.add('dragstart', function(e) {
+        var coordinates;
+
+        placemark = e.get('target');
+        coordinates = placemark.geometry.getCoordinates();
+        return placemark.properties.set('lastCoordinates', coordinates);
+      });
+      return placemark;
+    },
     onDragEnd: function(placemark) {
       var _this;
 
       _this = this;
       placemark.events.add('dragend', function(e) {
-        var coordinates, uuid;
-
         placemark = e.get('target');
-        coordinates = placemark.geometry.getCoordinates();
-        if (coordinates != null) {
-          console.info(coordinates);
-        }
-        uuid = placemark.properties.get('uuid').toString();
-        return $(_this).snMapsAjax('dragMark', uuid, coordinates);
+        $('#modal-dragmark').modal();
+        $('.dragmark-drag-link').off('click');
+        return $('.dragmark-drag-link').on('click', function(e) {
+          var coordinates, lastCoordinates, uuid;
+
+          e.preventDefault();
+          if ($(this).data('answer') === 'yes') {
+            uuid = placemark.properties.get('uuid').toString();
+            coordinates = placemark.geometry.getCoordinates();
+            return $(_this).snMapsAjax('dragMark', uuid, coordinates);
+          } else {
+            lastCoordinates = placemark.properties.get('lastCoordinates');
+            return placemark.geometry.setCoordinates(lastCoordinates);
+          }
+        });
       });
       return placemark;
     }
