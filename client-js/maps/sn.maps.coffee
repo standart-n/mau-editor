@@ -32,6 +32,15 @@ $ ->
 				# событие при клике на карту для создания новой метки
 				map.events.add 'click', (event) ->
 
+
+					###
+					map.geoObjects.each (clusterer) ->
+						# console.log clusterer.options.get('uuid') if console?
+						clusterer.each (obj) ->
+							console.log obj.options.get('hasBalloon') if console?
+							#console.log obj.properties.get('uuid') if console?
+					###
+
 					# если балун не открыт
 					if !map.balloon.isOpen()
 
@@ -116,18 +125,20 @@ $ ->
 							# чтобы была возможность очень просто удалить любую метку
 							map.geoObjects.add(placemarks[i])
 
-
+					###
 					# заполняем кластеризатор метками
-					#clusterer.add placemarks
+					clusterer.add placemarks
 
 					# настройки кластеризатора
 					clusterer.options.set
+						uuid: 'fff'
 						gridSize: 100			# Размер ячейки кластера в пикселях. 
 						maxZoom: 16				# Максимальный коэффициент масштабирования карты, на котором происходит кластеризация объектов.
 						minClusterSize: 2 		# Минимальное количество объектов, образующих кластер.
 					
 					# добавляем кластеризатор на карту
-					#map.geoObjects.add(clusterer)
+					map.geoObjects.add(clusterer)
+					###
 
 
 

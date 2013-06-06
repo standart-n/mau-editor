@@ -247,6 +247,13 @@ $(function() {
         clusterer = new ymaps.Clusterer();
         placemarks = [];
         map.events.add('click', function(event) {
+          /*
+          					map.geoObjects.each (clusterer) ->
+          						# console.log clusterer.options.get('uuid') if console?
+          						clusterer.each (obj) ->
+          							console.log obj.options.get('hasBalloon') if console?
+          							#console.log obj.properties.get('uuid') if console?
+          */
           if (!map.balloon.isOpen()) {
             return $(_this).snMapsAjax('getAgents', function(res) {
               var day, month, now, year;
@@ -322,20 +329,34 @@ $(function() {
           }
         });
         return $(_this).snMapsAjax('getPoints', function(points) {
-          var i, point;
+          var i, point, _results;
 
+          _results = [];
           for (i in points) {
             point = points[i];
             if (point.POINT != null) {
               placemarks[i] = $(_this).snMapsPlacemark(ymaps, point);
-              map.geoObjects.add(placemarks[i]);
+              _results.push(map.geoObjects.add(placemarks[i]));
+            } else {
+              _results.push(void 0);
             }
           }
-          return clusterer.options.set({
-            gridSize: 100,
-            maxZoom: 16,
-            minClusterSize: 2
-          });
+          return _results;
+          /*
+          					# заполняем кластеризатор метками
+          					clusterer.add placemarks
+          
+          					# настройки кластеризатора
+          					clusterer.options.set
+          						uuid: 'fff'
+          						gridSize: 100			# Размер ячейки кластера в пикселях. 
+          						maxZoom: 16				# Максимальный коэффициент масштабирования карты, на котором происходит кластеризация объектов.
+          						minClusterSize: 2 		# Минимальное количество объектов, образующих кластер.
+          					
+          					# добавляем кластеризатор на карту
+          					map.geoObjects.add(clusterer)
+          */
+
         });
       });
     }
