@@ -7297,9 +7297,9 @@ a.badge:hover {
 .map-main {
   position: fixed;
   top: 42px;
-  right: 5px;
-  bottom: 5px;
-  left: 5px;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
   background: #ccc;
 }
 

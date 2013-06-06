@@ -27,10 +27,13 @@ $ ->
 
 			# парсинг координат из текстовых данных
 			coords = point.POINT.toString().replace(/[\s\[\]]/g,'')
-			coordinates = [								
+			coordinates = [
 				coords.replace(/^(.*)\,(.*)$/, '$1') # ширина
 				coords.replace(/^(.*)\,(.*)$/, '$2') # долгота
 			]
+
+			coordinates
+
 
 
 		properties: (point) ->
@@ -38,9 +41,10 @@ $ ->
 			# заголовок подсказки на метке
 			hintContent: if point.PLAN_PERIOD_END? then "до <b>#{point.PLAN_PERIOD_END.toString()}</b>"
 			# заголовок балуна
-			balloonContentHeader: "<div>#{point.SVID}</div>"
+			#  balloonContentHeader: "<div>#{point.SVID}</div>"
+			balloonContentHeader: "<div></div>"
 			# содержимое балуна
-			balloonContentBody: ""
+			balloonContentBody: "<div></div>"
 			# записываем uuid
 			uuid: point.D$UUID.toString()
 
@@ -78,9 +82,21 @@ $ ->
 						# увеличиваем размер балуна, чтобы туда все поместилось
 						placemark.options.set 'balloonMinWidth', 500
 						placemark.options.set 'balloonMinHeight', 400
+
+						# берем дату, чтобы подставить ее в datepicker, который будет 
+						# незаполнен значением
+						now = new Date()
+						year = now.getFullYear().toString()
+						if now.getMonth() + 1 < 10 	then month = '0' + (now.getMonth() + 1).toString() 	else month = (now.getMonth() + 1).toString()
+						if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
+						res.date = "#{day}.#{month}.#{year}"
+
 						# рендерим нужный шаблон и загружаем его в балун
+						placemark.properties.set 'balloonContentHeader',
+							new EJS(url: 'view/balloonHeaderEditor.html', ext: '.html', type: '[', cache: off).render(res)
 						placemark.properties.set 'balloonContentBody',
 							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: off).render(res)
+
 						# активируем инпуты с выбором даты через календарь
 						$('#dp1').datepicker()
 						$('#dp2').datepicker()
@@ -104,15 +120,19 @@ $ ->
 							# map.destroy()
 
 						# триггер на сохранение данных внутри метки
-						$('.mark-save-link').on 'click', (e) ->							
+						$('.mark-save-link').on 'click', (e) ->
 							e.preventDefault()
 							# т.к. внутри полей широта и долгота данные могли измениться
 							# то берем их оттуда и устанавливаем для метки эти координаты
 							coordinates = [
-								$('#lat').val()
-								$('#lon').val()
+								parseFloat($('#lat').val().replace(",","."))
+								parseFloat($('#lon').val().replace(",","."))
 							]
 							placemark.geometry.setCoordinates coordinates
+
+							# возможно сменился тип объекта и нужно будет сменить иконку
+							placemark.options.set 'preset', if $('.vid_0').hasClass('active') then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
+
 							# отправляем все данные на сервер
 							$(_this).snMapsAjax 'saveMark', uuid, 
 								agent: 			$('#agent').val()
@@ -120,8 +140,9 @@ $ ->
 								date1: 			$('#date1').val()
 								date2: 			$('#date2').val()
 								date3: 			$('#date3').val()
-								lat:			$('#lat').val()
-								lon:			$('#lon').val()
+								lat:			coordinates[0]
+								lon:			coordinates[1]
+								vid:			if $('.vid_0').hasClass('active') then 0 else 1
 							, (response) ->
 								if !response
 									alert 'К сожалению, не удалось сохранить метку'
@@ -137,6 +158,8 @@ $ ->
 					else
 						# если пользователь не авторизован или эта метка не его
 						# то рендерим обычный шаблон с информацией и показываем внутри балуна
+						placemark.properties.set 'balloonContentHeader',
+							new EJS(url: 'view/balloonHeader.html', ext: '.html', type: '[', cache: off).render(res)
 						placemark.properties.set 'balloonContentBody',
 							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: off).render(res)
 

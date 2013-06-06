@@ -28,37 +28,69 @@ $ ->
 				clusterer = new ymaps.Clusterer()				# создаем кластеризатор
 				placemarks = []									# массив меток
 
+
 				# событие при клике на карту для создания новой метки
 				map.events.add 'click', (event) ->
 
-					# проверяем есть ли данные об авторизации пользователя
-					if window.user?.id? and window.user?.login? and window.user?.hash?
-					
+					# если балун не открыт
+					if !map.balloon.isOpen()
+
+						res = {}
+
+						# берем дату, чтобы подставить ее в datepicker, который будет 
+						# незаполнен значением
+						now = new Date()
+						year = now.getFullYear().toString()
+						if now.getMonth() + 1 < 10 	then month = '0' + (now.getMonth() + 1).toString() 	else month = (now.getMonth() + 1).toString()
+						if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
+						res.date = "#{day}.#{month}.#{year}"
+
 						# вычисляем координаты клика
-						coordinates = event.get 'coordPosition'
-						# берем объект с картой
-						map = event.get('target')
+						res.coordinates = event.get 'coordPosition'
 
-						# вызываем модальное окно с предложением создать новую метку
-						$('#modal-newmark').modal()
-						# убираем с кнопок предыдущие триггеры
-						$('.newmark-add-link').off 'click'
-						# ставим новый триггер с новыми координатами
-						$('.newmark-add-link').on 'click', (e) ->
+						# рендерим нужный шаблон и загружаем его в балун
+						map.balloon.open res.coordinates,
+							contentHeader: new EJS(url: 'view/balloonHeaderCreate.html', ext: '.html', type: '[', cache: off).render(res)
+							contentBody: new EJS(url: 'view/balloonContentCreate.html', ext: '.html', type: '[', cache: off).render(res)
+
+						# активируем инпуты с выбором даты через календарь
+						$('#dp1').datepicker()
+						$('#dp2').datepicker()
+						$('#dp3').datepicker()
+
+						$('.mark-create-link').on 'click', (e) ->
 							e.preventDefault()
-
-							# делаем запрос к базе с целью создания метки
-							$(_this).snMapsAjax 'addNewMark', coordinates, $(this).data('vid'), (res) ->
+							coordinates = [
+								parseFloat($('#lat').val().toString().replace(",","."))
+								parseFloat($('#lon').val().toString().replace(",","."))
+							]
+							# отправляем все данные на сервер
+							$(_this).snMapsAjax 'createMark',
+								agent: 			$('#agent').val()
+								info: 			$('#info').val()
+								date1: 			$('#date1').val()
+								date2: 			$('#date2').val()
+								date3: 			$('#date3').val()
+								lat:			coordinates[0]
+								lon:			coordinates[1]
+								vid:			if $('.vid_0').hasClass('active') then 0 else 1
+							, (res) ->
 								# если пришел положительный ответ
 								if res
-									console.info 'add', res if console?
 									# создаем метку
 									placemark = $(_this).snMapsPlacemark ymaps, res
 									# добавляем ее на карту
 									map.geoObjects.add(placemark)
-								else
-									alert 'К сожалению, не удалось добавить метку на карту'
+								else 
+									alert 'К сожалению, не удалось создать метку'
 
+						$('.balloon-close').on 'click', (e) ->
+							e.preventDefault()
+							map.balloon.close()
+
+
+					else
+						map.balloon.close()
 
 
 

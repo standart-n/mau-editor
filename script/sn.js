@@ -247,29 +247,72 @@ $(function() {
         clusterer = new ymaps.Clusterer();
         placemarks = [];
         map.events.add('click', function(event) {
-          var coordinates, _ref, _ref1, _ref2;
+          var day, month, now, res, year;
 
-          if ((((_ref = window.user) != null ? _ref.id : void 0) != null) && (((_ref1 = window.user) != null ? _ref1.login : void 0) != null) && (((_ref2 = window.user) != null ? _ref2.hash : void 0) != null)) {
-            coordinates = event.get('coordPosition');
-            map = event.get('target');
-            $('#modal-newmark').modal();
-            $('.newmark-add-link').off('click');
-            return $('.newmark-add-link').on('click', function(e) {
+          if (!map.balloon.isOpen()) {
+            res = {};
+            now = new Date();
+            year = now.getFullYear().toString();
+            if (now.getMonth() + 1 < 10) {
+              month = '0' + (now.getMonth() + 1).toString();
+            } else {
+              month = (now.getMonth() + 1).toString();
+            }
+            if (now.getDate() < 10) {
+              day = '0' + now.getDate().toString();
+            } else {
+              day = now.getDate().toString();
+            }
+            res.date = "" + day + "." + month + "." + year;
+            res.coordinates = event.get('coordPosition');
+            map.balloon.open(res.coordinates, {
+              contentHeader: new EJS({
+                url: 'view/balloonHeaderCreate.html',
+                ext: '.html',
+                type: '[',
+                cache: false
+              }).render(res),
+              contentBody: new EJS({
+                url: 'view/balloonContentCreate.html',
+                ext: '.html',
+                type: '[',
+                cache: false
+              }).render(res)
+            });
+            $('#dp1').datepicker();
+            $('#dp2').datepicker();
+            $('#dp3').datepicker();
+            $('.mark-create-link').on('click', function(e) {
+              var coordinates;
+
               e.preventDefault();
-              return $(_this).snMapsAjax('addNewMark', coordinates, $(this).data('vid'), function(res) {
+              coordinates = [parseFloat($('#lat').val().toString().replace(",", ".")), parseFloat($('#lon').val().toString().replace(",", "."))];
+              return $(_this).snMapsAjax('createMark', {
+                agent: $('#agent').val(),
+                info: $('#info').val(),
+                date1: $('#date1').val(),
+                date2: $('#date2').val(),
+                date3: $('#date3').val(),
+                lat: coordinates[0],
+                lon: coordinates[1],
+                vid: $('.vid_0').hasClass('active') ? 0 : 1
+              }, function(res) {
                 var placemark;
 
                 if (res) {
-                  if (typeof console !== "undefined" && console !== null) {
-                    console.info('add', res);
-                  }
                   placemark = $(_this).snMapsPlacemark(ymaps, res);
                   return map.geoObjects.add(placemark);
                 } else {
-                  return alert('К сожалению, не удалось добавить метку на карту');
+                  return alert('К сожалению, не удалось создать метку');
                 }
               });
             });
+            return $('.balloon-close').on('click', function(e) {
+              e.preventDefault();
+              return map.balloon.close();
+            });
+          } else {
+            return map.balloon.close();
           }
         });
         return $(_this).snMapsAjax('getPoints', function(points) {
@@ -345,9 +388,6 @@ $(function() {
           },
           dataType: 'json',
           success: function(s) {
-            if (typeof console !== "undefined" && console !== null) {
-              console.info(s);
-            }
             if ((s.content != null) && (s.signin != null)) {
               if (callback != null) {
                 return callback(s);
@@ -410,9 +450,6 @@ $(function() {
           },
           dataType: 'json',
           success: function(s) {
-            if (typeof console !== "undefined" && console !== null) {
-              console.info(s);
-            }
             if (s.res != null) {
               if (callback != null) {
                 return callback(s.res);
@@ -444,6 +481,7 @@ $(function() {
             date3: values.date3,
             lat: values.lat,
             lon: values.lon,
+            vid: values.vid,
             userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
             login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
             hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
@@ -482,9 +520,43 @@ $(function() {
           },
           dataType: 'json',
           success: function(s) {
-            if (typeof console !== "undefined" && console !== null) {
-              console.info(s);
+            if (s.res != null) {
+              if (callback != null) {
+                return callback(s.res);
+              }
             }
+          },
+          error: function(XMLHttpRequest, textStatus, error) {
+            if (typeof console !== "undefined" && console !== null) {
+              return console.log(XMLHttpRequest, textStatus, error);
+            }
+          }
+        });
+      }
+    },
+    createMark: function(values, callback) {
+      var _ref, _ref1, _ref2;
+
+      if (values != null) {
+        return $.ajax({
+          url: 'index.php',
+          type: 'GET',
+          data: {
+            action: 'createMark',
+            agent: values.agent,
+            info: values.info,
+            date1: values.date1,
+            date2: values.date2,
+            date3: values.date3,
+            lat: values.lat,
+            lon: values.lon,
+            vid: values.vid,
+            userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
+            login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
+            hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
+          },
+          dataType: 'json',
+          success: function(s) {
             if (s.res != null) {
               if (callback != null) {
                 return callback(s.res);
@@ -532,13 +604,14 @@ $(function() {
       var coordinates, coords;
 
       coords = point.POINT.toString().replace(/[\s\[\]]/g, '');
-      return coordinates = [coords.replace(/^(.*)\,(.*)$/, '$1'), coords.replace(/^(.*)\,(.*)$/, '$2')];
+      coordinates = [coords.replace(/^(.*)\,(.*)$/, '$1'), coords.replace(/^(.*)\,(.*)$/, '$2')];
+      return coordinates;
     },
     properties: function(point) {
       return {
         hintContent: point.PLAN_PERIOD_END != null ? "до <b>" + (point.PLAN_PERIOD_END.toString()) + "</b>" : void 0,
-        balloonContentHeader: "<div>" + point.SVID + "</div>",
-        balloonContentBody: "",
+        balloonContentHeader: "<div></div>",
+        balloonContentBody: "<div></div>",
         uuid: point.D$UUID.toString()
       };
     },
@@ -564,12 +637,31 @@ $(function() {
         map = placemark.getMap();
         uuid = placemark.properties.get('uuid').toString();
         return $(_this).snMapsAjax('getBalloonContent', uuid, function(res) {
-          var _ref, _ref1, _ref2, _ref3;
+          var day, month, now, year, _ref, _ref1, _ref2, _ref3;
 
           if (res.signin && ((_ref = window.user) != null ? (_ref1 = _ref.id) != null ? _ref1.toString() : void 0 : void 0) === ((_ref2 = res.content) != null ? (_ref3 = _ref2.USER_ID) != null ? _ref3.toString() : void 0 : void 0)) {
             res.coordinates = $this.coordinates(res.content);
             placemark.options.set('balloonMinWidth', 500);
             placemark.options.set('balloonMinHeight', 400);
+            now = new Date();
+            year = now.getFullYear().toString();
+            if (now.getMonth() + 1 < 10) {
+              month = '0' + (now.getMonth() + 1).toString();
+            } else {
+              month = (now.getMonth() + 1).toString();
+            }
+            if (now.getDate() < 10) {
+              day = '0' + now.getDate().toString();
+            } else {
+              day = now.getDate().toString();
+            }
+            res.date = "" + day + "." + month + "." + year;
+            placemark.properties.set('balloonContentHeader', new EJS({
+              url: 'view/balloonHeaderEditor.html',
+              ext: '.html',
+              type: '[',
+              cache: false
+            }).render(res));
             placemark.properties.set('balloonContentBody', new EJS({
               url: 'view/balloonContentEditor.html',
               ext: '.html',
@@ -598,16 +690,18 @@ $(function() {
               var coordinates;
 
               e.preventDefault();
-              coordinates = [$('#lat').val(), $('#lon').val()];
+              coordinates = [parseFloat($('#lat').val().replace(",", ".")), parseFloat($('#lon').val().replace(",", "."))];
               placemark.geometry.setCoordinates(coordinates);
+              placemark.options.set('preset', $('.vid_0').hasClass('active') ? 'twirl#workshopIcon' : 'twirl#turnRightIcon');
               return $(_this).snMapsAjax('saveMark', uuid, {
                 agent: $('#agent').val(),
                 info: $('#info').val(),
                 date1: $('#date1').val(),
                 date2: $('#date2').val(),
                 date3: $('#date3').val(),
-                lat: $('#lat').val(),
-                lon: $('#lon').val()
+                lat: coordinates[0],
+                lon: coordinates[1],
+                vid: $('.vid_0').hasClass('active') ? 0 : 1
               }, function(response) {
                 if (!response) {
                   return alert('К сожалению, не удалось сохранить метку');
@@ -619,6 +713,12 @@ $(function() {
               return balloon.close();
             });
           } else {
+            placemark.properties.set('balloonContentHeader', new EJS({
+              url: 'view/balloonHeader.html',
+              ext: '.html',
+              type: '[',
+              cache: false
+            }).render(res));
             return placemark.properties.set('balloonContentBody', new EJS({
               url: 'view/balloonContent.html',
               ext: '.html',

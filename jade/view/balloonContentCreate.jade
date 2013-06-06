@@ -1,56 +1,35 @@
-
 p
+
 	form.form-horizontal
 
 		.control-group
 			label.control-label(for = "agent") Исполнитель:
 			.controls
-				input#agent(type = "text", value = "[%= content.SAGENT %]", placeholder = "Исполнитель")
+				input#agent(type = "text", value = "", placeholder = "Исполнитель")
 
 		.control-group
 			label.control-label Дата начала:
 			label.controls
-				[% if (content.PERIOD_BEG !== "undefined" && content.PERIOD_BEG !== null) { %]
-				div#dp1.input-append.date(data-date = "[%= content.PERIOD_BEG %]", data-date-format = "dd.mm.yyyy")
-					input#date1.input-small(size = "16", type = "text", value = "[%= content.PERIOD_BEG %]")
-					span.add-on
-						i.icon-th
-				[% } else { %]
 				div#dp1.input-append.date(data-date = "[%= date %]", data-date-format = "dd.mm.yyyy")
 					input#date1.input-small(size = "16", type = "text", value = "")
 					span.add-on
 						i.icon-th
-				[% } %]
 
 		.control-group
 			label.control-label План дата закр.:
 			label.controls
-				[% if (content.PLAN_PERIOD_END !== "undefined" && content.PLAN_PERIOD_END !== null) { %]
-				div#dp2.input-append.date(data-date = "[%= content.PLAN_PERIOD_END %]", data-date-format = "dd.mm.yyyy")
-					input#date2.input-small(size = "16", type = "text", value = "[%= content.PLAN_PERIOD_END %]")
-					span.add-on
-						i.icon-th
-				[% } else { %]
 				div#dp2.input-append.date(data-date = "[% date %]", data-date-format = "dd.mm.yyyy")
 					input#date2.input-small(size = "16", type = "text", value = "")
 					span.add-on
 						i.icon-th
-				[% } %]
 
 		.control-group
 			label.control-label Дата закрытия:
 			label.controls
-				[% if (content.PERIOD_END !== "undefined" && content.PERIOD_END !== null) { %]
-				div#dp3.input-append.date(data-date = "[%= content.PERIOD_END %]", data-date-format = "dd.mm.yyyy")
-					input#date3.input-small(size = "16", type = "text", value = "[%= content.PERIOD_END %]")
-					span.add-on
-						i.icon-th
-				[% } else { %]
 				div#dp3.input-append.date(data-date = "[%= date %]", data-date-format = "dd.mm.yyyy")
 					input#date3.input-small(size = "16", type = "text", value = "")
 					span.add-on
 						i.icon-th
-				[% } %]
 
 		.control-group
 			label.control-label(for = "lat") Широта
@@ -66,11 +45,7 @@ p
 			label.control-label Комментарий:
 			label.controls
 				textarea#info(rows = "3", wrap = "hard")
-					[%= content.INFO %]
 
-
-.pull-left
-	a.balloon-close.mark-delete-link.btn.btn-danger(href = "#") Удалить
 .pull-right.btn-group
-	a.balloon-close.mark-save-link.btn.btn-primary(href = "#") Сохранить
+	a.balloon-close.mark-create-link.btn.btn-success(href = "#") Создать
 	a.balloon-close.mark-cancel-link.btn(href = "#") Отмена

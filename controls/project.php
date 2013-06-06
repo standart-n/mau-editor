@@ -23,6 +23,9 @@ public static function engine() {
 		case "addNewMark":
 			return self::addNewMark();
 		break;
+		case "createMark":
+			return self::createMark();
+		break;
 		case "removeMark":
 			return self::removeMark();
 		break;
@@ -60,14 +63,12 @@ public static function getBalloonContent($j=array()) {
 	$j['content']=editor::getBalloonContent();
 	$j['agents']=editor::getAgents();
 	$j['tm']=time();
-	$j['date']=date('d.m.Y');
 	if (signin::check()) { $j['signin']=true; } else { $j['signin']=false; }
 	return $j;
 }
 
 public static function addNewMark($j=array()) {
 	$j['res']=editor::addNewMark();
-	$j['sql']=sql::$query;
 	$j['tm']=time();	
 	return $j;
 }
@@ -78,9 +79,14 @@ public static function removeMark($j=array()) {
 	return $j;
 }
 
+public static function createMark($j=array()) {
+	$j['res']=editor::createMark();
+	$j['tm']=time();	
+	return $j;
+}
+
 public static function saveMark($j=array()) {
 	$j['res']=editor::saveMark();
-	$j['sql']=sql::$query;
 	$j['tm']=time();	
 	return $j;
 }

@@ -72,10 +72,11 @@ public static function removeMark($userid,$id,$s="") {
 	return $s;
 }
 
-public static function saveMark($userid,$id,$agent,$info,$lat,$lon,$s="") {
+public static function saveMark($userid,$id,$agent,$info,$lat,$lon,$vid,$s="") {
 	$s.="update bad_roads set ";
 	$s.="SAGENT = '".$agent."', ";
 	$s.="INFO = '".$info."', ";
+	$s.="VID_ID = ".$vid.", ";
 
 	if (url::$date1 != '') {
 		$s.="PERIOD_BEG = '".url::$date1."', ";

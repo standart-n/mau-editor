@@ -36,7 +36,7 @@ $ ->
 						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
 					dataType: 'json'
 					success: (s) ->
-						console.info s if console?
+						# console.info s if console?
 						if s.content? and s.signin?
 							callback(s) if callback?
 	
@@ -84,7 +84,7 @@ $ ->
 						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
 					dataType: 'json'
 					success: (s) ->
-						console.info s if console?
+						# console.info s if console?
 						if s.res?
 							callback(s.res) if callback?
 	
@@ -109,6 +109,7 @@ $ ->
 						date3:			values.date3
 						lat:			values.lat
 						lon:			values.lon
+						vid:			values.vid
 						userid: 		if window.user?.id? 	then window.user.id 	else ''
 						login: 			if window.user?.login? 	then window.user.login 	else ''
 						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
@@ -138,7 +139,36 @@ $ ->
 						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
 					dataType: 'json'
 					success: (s) ->
-						console.info s if console?
+						# console.info s if console?
+						if s.res?
+							callback(s.res) if callback?
+	
+					error: (XMLHttpRequest, textStatus, error) ->
+						console.log XMLHttpRequest, textStatus, error if console?
+
+		# запрос на создание метки сразу с данными
+		createMark: (values, callback) ->
+
+			if values?
+				$.ajax
+					url: 'index.php'
+					type: 'GET'
+					data:						
+						action: 		'createMark'
+						agent:			values.agent
+						info:			values.info
+						date1:			values.date1
+						date2:			values.date2
+						date3:			values.date3
+						lat:			values.lat
+						lon:			values.lon
+						vid:			values.vid
+						userid: 		if window.user?.id? 	then window.user.id 	else ''
+						login: 			if window.user?.login? 	then window.user.login 	else ''
+						hash: 			if window.user?.hash? 	then window.user.hash 	else ''
+					dataType: 'json'
+					success: (s) ->
+						# console.info s if console?
 						if s.res?
 							callback(s.res) if callback?
 	

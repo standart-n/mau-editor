@@ -1,0 +1,9 @@
+
+.btn-group(data-toggle = "buttons-radio")
+	[% if (parseInt(content.VID_ID) === 0) { %]
+	a.btn.active.vid_0(href = "#") Перекоп
+	a.btn.vid_1(href = "#") Объезд
+	[% } else { %]
+	a.btn.vid_0(href = "#") Перекоп
+	a.btn.active.vid_1(href = "#") Объезд
+	[% } %]
