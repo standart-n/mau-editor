@@ -35,58 +35,64 @@ $ ->
 					# если балун не открыт
 					if !map.balloon.isOpen()
 
-						res = {}
+						$(_this).snMapsAjax 'getAgents', (res) ->
 
-						# берем дату, чтобы подставить ее в datepicker, который будет 
-						# незаполнен значением
-						now = new Date()
-						year = now.getFullYear().toString()
-						if now.getMonth() + 1 < 10 	then month = '0' + (now.getMonth() + 1).toString() 	else month = (now.getMonth() + 1).toString()
-						if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
-						res.date = "#{day}.#{month}.#{year}"
+							# берем дату, чтобы подставить ее в datepicker, который будет 
+							# незаполнен значением
+							now = new Date()
+							year = now.getFullYear().toString()
+							if now.getMonth() + 1 < 10 	then month = '0' + (now.getMonth() + 1).toString() 	else month = (now.getMonth() + 1).toString()
+							if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
+							res.date = "#{day}.#{month}.#{year}"
 
-						# вычисляем координаты клика
-						res.coordinates = event.get 'coordPosition'
+							# вычисляем координаты клика
+							res.coordinates = event.get 'coordPosition'
 
-						# рендерим нужный шаблон и загружаем его в балун
-						map.balloon.open res.coordinates,
-							contentHeader: new EJS(url: 'view/balloonHeaderCreate.html', ext: '.html', type: '[', cache: off).render(res)
-							contentBody: new EJS(url: 'view/balloonContentCreate.html', ext: '.html', type: '[', cache: off).render(res)
+							# рендерим нужный шаблон и загружаем его в балун
+							map.balloon.open res.coordinates,
+								contentHeader: new EJS(url: 'view/balloonHeaderCreate.html', ext: '.html', type: '[', cache: off).render(res)
+								contentBody: new EJS(url: 'view/balloonContentCreate.html', ext: '.html', type: '[', cache: off).render(res)
 
-						# активируем инпуты с выбором даты через календарь
-						$('#dp1').datepicker()
-						$('#dp2').datepicker()
-						$('#dp3').datepicker()
+							# активируем инпуты с выбором даты через календарь
+							$('#dp1').datepicker()
+							$('#dp2').datepicker()
+							$('#dp3').datepicker()
 
-						$('.mark-create-link').on 'click', (e) ->
-							e.preventDefault()
-							coordinates = [
-								parseFloat($('#lat').val().toString().replace(",","."))
-								parseFloat($('#lon').val().toString().replace(",","."))
-							]
-							# отправляем все данные на сервер
-							$(_this).snMapsAjax 'createMark',
-								agent: 			$('#agent').val()
-								info: 			$('#info').val()
-								date1: 			$('#date1').val()
-								date2: 			$('#date2').val()
-								date3: 			$('#date3').val()
-								lat:			coordinates[0]
-								lon:			coordinates[1]
-								vid:			if $('.vid_0').hasClass('active') then 0 else 1
-							, (res) ->
-								# если пришел положительный ответ
-								if res
-									# создаем метку
-									placemark = $(_this).snMapsPlacemark ymaps, res
-									# добавляем ее на карту
-									map.geoObjects.add(placemark)
-								else 
-									alert 'К сожалению, не удалось создать метку'
+							# активируем typeahead при заполнении поля исполнитель
+							if res.agents?
+								$('#agent').typeahead
+									# в качестве источника указываем данные которые пришли от сервера
+									source: res.agents
 
-						$('.balloon-close').on 'click', (e) ->
-							e.preventDefault()
-							map.balloon.close()
+							$('.mark-create-link').on 'click', (e) ->
+								e.preventDefault()
+								coordinates = [
+									parseFloat($('#lat').val().toString().replace(",","."))
+									parseFloat($('#lon').val().toString().replace(",","."))
+								]
+								# отправляем все данные на сервер
+								$(_this).snMapsAjax 'createMark',
+									agent: 			$('#agent').val()
+									info: 			$('#info').val()
+									date1: 			$('#date1').val()
+									date2: 			$('#date2').val()
+									date3: 			$('#date3').val()
+									lat:			coordinates[0]
+									lon:			coordinates[1]
+									vid:			if $('.vid_0').hasClass('active') then 0 else 1
+								, (res) ->
+									# если пришел положительный ответ
+									if res
+										# создаем метку
+										placemark = $(_this).snMapsPlacemark ymaps, res
+										# добавляем ее на карту
+										map.geoObjects.add(placemark)
+									else 
+										alert 'К сожалению, не удалось создать метку'
+
+							$('.balloon-close').on 'click', (e) ->
+								e.preventDefault()
+								map.balloon.close()
 
 
 					else

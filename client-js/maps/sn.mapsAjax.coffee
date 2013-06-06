@@ -175,6 +175,26 @@ $ ->
 					error: (XMLHttpRequest, textStatus, error) ->
 						console.log XMLHttpRequest, textStatus, error if console?
 
+		# запрос на получение списка исполнителей для typeahead
+		getAgents: (callback) ->
+
+			$.ajax
+				url: 'index.php'
+				type: 'GET'
+				data:						
+					action: 		'getAgents'
+					userid: 		if window.user?.id? 	then window.user.id 	else ''
+					login: 			if window.user?.login? 	then window.user.login 	else ''
+					hash: 			if window.user?.hash? 	then window.user.hash 	else ''
+				dataType: 'json'
+				success: (s) ->
+					# console.info s if console?
+					if s.agents?
+						callback(s) if callback?
+
+				error: (XMLHttpRequest, textStatus, error) ->
+					console.log XMLHttpRequest, textStatus, error if console?
+
 
 
 	# инициализация

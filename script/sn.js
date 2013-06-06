@@ -247,69 +247,75 @@ $(function() {
         clusterer = new ymaps.Clusterer();
         placemarks = [];
         map.events.add('click', function(event) {
-          var day, month, now, res, year;
-
           if (!map.balloon.isOpen()) {
-            res = {};
-            now = new Date();
-            year = now.getFullYear().toString();
-            if (now.getMonth() + 1 < 10) {
-              month = '0' + (now.getMonth() + 1).toString();
-            } else {
-              month = (now.getMonth() + 1).toString();
-            }
-            if (now.getDate() < 10) {
-              day = '0' + now.getDate().toString();
-            } else {
-              day = now.getDate().toString();
-            }
-            res.date = "" + day + "." + month + "." + year;
-            res.coordinates = event.get('coordPosition');
-            map.balloon.open(res.coordinates, {
-              contentHeader: new EJS({
-                url: 'view/balloonHeaderCreate.html',
-                ext: '.html',
-                type: '[',
-                cache: false
-              }).render(res),
-              contentBody: new EJS({
-                url: 'view/balloonContentCreate.html',
-                ext: '.html',
-                type: '[',
-                cache: false
-              }).render(res)
-            });
-            $('#dp1').datepicker();
-            $('#dp2').datepicker();
-            $('#dp3').datepicker();
-            $('.mark-create-link').on('click', function(e) {
-              var coordinates;
+            return $(_this).snMapsAjax('getAgents', function(res) {
+              var day, month, now, year;
 
-              e.preventDefault();
-              coordinates = [parseFloat($('#lat').val().toString().replace(",", ".")), parseFloat($('#lon').val().toString().replace(",", "."))];
-              return $(_this).snMapsAjax('createMark', {
-                agent: $('#agent').val(),
-                info: $('#info').val(),
-                date1: $('#date1').val(),
-                date2: $('#date2').val(),
-                date3: $('#date3').val(),
-                lat: coordinates[0],
-                lon: coordinates[1],
-                vid: $('.vid_0').hasClass('active') ? 0 : 1
-              }, function(res) {
-                var placemark;
-
-                if (res) {
-                  placemark = $(_this).snMapsPlacemark(ymaps, res);
-                  return map.geoObjects.add(placemark);
-                } else {
-                  return alert('К сожалению, не удалось создать метку');
-                }
+              now = new Date();
+              year = now.getFullYear().toString();
+              if (now.getMonth() + 1 < 10) {
+                month = '0' + (now.getMonth() + 1).toString();
+              } else {
+                month = (now.getMonth() + 1).toString();
+              }
+              if (now.getDate() < 10) {
+                day = '0' + now.getDate().toString();
+              } else {
+                day = now.getDate().toString();
+              }
+              res.date = "" + day + "." + month + "." + year;
+              res.coordinates = event.get('coordPosition');
+              map.balloon.open(res.coordinates, {
+                contentHeader: new EJS({
+                  url: 'view/balloonHeaderCreate.html',
+                  ext: '.html',
+                  type: '[',
+                  cache: false
+                }).render(res),
+                contentBody: new EJS({
+                  url: 'view/balloonContentCreate.html',
+                  ext: '.html',
+                  type: '[',
+                  cache: false
+                }).render(res)
               });
-            });
-            return $('.balloon-close').on('click', function(e) {
-              e.preventDefault();
-              return map.balloon.close();
+              $('#dp1').datepicker();
+              $('#dp2').datepicker();
+              $('#dp3').datepicker();
+              if (res.agents != null) {
+                $('#agent').typeahead({
+                  source: res.agents
+                });
+              }
+              $('.mark-create-link').on('click', function(e) {
+                var coordinates;
+
+                e.preventDefault();
+                coordinates = [parseFloat($('#lat').val().toString().replace(",", ".")), parseFloat($('#lon').val().toString().replace(",", "."))];
+                return $(_this).snMapsAjax('createMark', {
+                  agent: $('#agent').val(),
+                  info: $('#info').val(),
+                  date1: $('#date1').val(),
+                  date2: $('#date2').val(),
+                  date3: $('#date3').val(),
+                  lat: coordinates[0],
+                  lon: coordinates[1],
+                  vid: $('.vid_0').hasClass('active') ? 0 : 1
+                }, function(res) {
+                  var placemark;
+
+                  if (res) {
+                    placemark = $(_this).snMapsPlacemark(ymaps, res);
+                    return map.geoObjects.add(placemark);
+                  } else {
+                    return alert('К сожалению, не удалось создать метку');
+                  }
+                });
+              });
+              return $('.balloon-close').on('click', function(e) {
+                e.preventDefault();
+                return map.balloon.close();
+              });
             });
           } else {
             return map.balloon.close();
@@ -570,6 +576,33 @@ $(function() {
           }
         });
       }
+    },
+    getAgents: function(callback) {
+      var _ref, _ref1, _ref2;
+
+      return $.ajax({
+        url: 'index.php',
+        type: 'GET',
+        data: {
+          action: 'getAgents',
+          userid: ((_ref = window.user) != null ? _ref.id : void 0) != null ? window.user.id : '',
+          login: ((_ref1 = window.user) != null ? _ref1.login : void 0) != null ? window.user.login : '',
+          hash: ((_ref2 = window.user) != null ? _ref2.hash : void 0) != null ? window.user.hash : ''
+        },
+        dataType: 'json',
+        success: function(s) {
+          if (s.agents != null) {
+            if (callback != null) {
+              return callback(s);
+            }
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, error) {
+          if (typeof console !== "undefined" && console !== null) {
+            return console.log(XMLHttpRequest, textStatus, error);
+          }
+        }
+      });
     }
   };
   return $.fn.snMapsAjax = function(sn) {

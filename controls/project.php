@@ -20,6 +20,9 @@ public static function engine() {
 		case "getBalloonContent":
 			return self::getBalloonContent();
 		break;
+		case "getAgents":
+			return self::getAgents();
+		break;
 		case "addNewMark":
 			return self::addNewMark();
 		break;
@@ -64,6 +67,12 @@ public static function getBalloonContent($j=array()) {
 	$j['agents']=editor::getAgents();
 	$j['tm']=time();
 	if (signin::check()) { $j['signin']=true; } else { $j['signin']=false; }
+	return $j;
+}
+
+public static function getAgents($j=array()) {
+	$j['agents']=editor::getAgents();
+	$j['tm']=time();
 	return $j;
 }
 

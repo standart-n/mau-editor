@@ -101,6 +101,7 @@ $ ->
 						$('#dp1').datepicker()
 						$('#dp2').datepicker()
 						$('#dp3').datepicker()
+
 						# активируем typeahead при заполнении поля исполнитель
 						if res.agents?
 							$('#agent').typeahead
