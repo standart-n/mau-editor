@@ -23,9 +23,6 @@ public static function engine() {
 		case "getAgents":
 			return self::getAgents();
 		break;
-		case "addNewMark":
-			return self::addNewMark();
-		break;
 		case "createMark":
 			return self::createMark();
 		break;
@@ -93,7 +90,8 @@ public static function removeMark($j=array()) {
 
 public static function createMark($j=array()) {
 	$j['res']=editor::createMark();
-	$j['tm']=time();	
+	$j['tm']=time();
+	//$j['sql']=sql::$query;
 	return $j;
 }
 

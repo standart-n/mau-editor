@@ -24,6 +24,11 @@ public static function getBalloonContent($uuid,$s="") {
 	return $s;
 }
 
+public static function getUUID($s="") {
+	$s.="select UUID_TO_CHAR(GEN_UUID()) as uuid from rdb\$database";
+	return $s;
+}
+
 public static function getAgents($s="") {
 	//$s.="select fullname, D\$UUID from vw_agents where status=0 and fullname is not null and fullname <> ''";
 	$s.="select ";
@@ -40,11 +45,10 @@ public static function signin($login,$password,$s="") {
 	return $s;
 }
 
-public static function addNewMark($userid,$vid,$s="") {
+public static function addNewMark($userid,$uuid,$vid,$s="") {
 	$s.="insert into bad_roads ";
-	$s.="(INSERTSESSION_ID,USER_ID,STATUS,SAGENT,PERIOD_BEG,PLAN_PERIOD_END,PERIOD_END,INFO,VID_ID,POINT) ";
-	//$s.="values (0,".$userid.",0,'DF936F7A-1411-864F-A861-601A7B68FE15',null,null,null,null,".$vid.",'0000') ";
-	$s.="values (0,".$userid.",0,null,null,null,null,null,".$vid.",'0000') ";
+	$s.="(D\$UUID,INSERTSESSION_ID,USER_ID,STATUS,VID_ID) ";
+	$s.="values ('".$uuid."',0,".$userid.",0,".$vid.") ";
 	self::$query=$s;
 	return $s;
 }
@@ -64,6 +68,7 @@ public static function getPointById($uuid,$s="") {
 	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END, STREET ";
 	$s.="from VW_BAD_ROADS ";
 	$s.="where status = 0 and D\$UUID = '".$uuid."'";
+	self::$query=$s;
 	return $s;
 }
 

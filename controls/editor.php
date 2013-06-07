@@ -46,47 +46,18 @@ public static function getAgents($j=array()) {
 }
 
 
-public static function addNewMark($j=array()) {
-
-	if (signin::check()) {
-		if ((isset(url::$lat)) and (isset(url::$lon)) and (isset(url::$userid)) and (isset(url::$vid))) {
-			if (query(sql::addNewMark(url::$userid,url::$vid))) {
-				if (query(sql::getNewMark(),$m)) {
-					if (isset($m[0])) {
-						if (isset($m[0]->ID)) {
-							if (query(sql::editNewMark($m[0]->ID,url::$lat,url::$lon))) {
-								if (query(sql::getPointById($m[0]->ID),$p)) {
-									foreach ($p[0] as $key => $value) {
-										$j[$key] = toUTF($value);
-									}
-									return $j;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return false;
-}
-
-
 public static function createMark($j=array()) {
 	if (signin::check()) {
 		if ((isset(url::$lat)) and (isset(url::$lon)) and (isset(url::$userid)) and (isset(url::$vid))) {
-			if (query(sql::addNewMark(url::$userid,url::$vid))) {
-				if (query(sql::getNewMark(),$m)) {
-					if (isset($m[0])) {
-						if (isset($m[0]->ID)) {
-							// if (query(sql::editNewMark($m[0]->ID,url::$lat,url::$lon))) {
-							if (query(sql::saveMark(url::$userid,$m[0]->ID,url::$agent,url::$info,url::$lat,url::$lon,url::$vid))) {
-								if (query(sql::getPointById($m[0]->ID),$p)) {
-									foreach ($p[0] as $key => $value) {
-										$j[$key] = toUTF($value);
-									}
-									return $j;
+			if (query(sql::getUUID(),$u)) {
+				if (isset($u[0]->UUID)) {
+					if (query(sql::addNewMark(url::$userid,$u[0]->UUID,url::$vid))) {
+						if (query(sql::saveMark(url::$userid,$u[0]->UUID,url::$agent,url::$info,url::$lat,url::$lon,url::$vid))) {
+							if (query(sql::getPointById($u[0]->UUID),$p)) {
+								foreach ($p[0] as $key => $value) {
+									$j[$key] = toUTF($value);
 								}
+								return $j;
 							}
 						}
 					}
