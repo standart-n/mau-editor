@@ -28,7 +28,8 @@ $ ->
 		coordinates: (point) ->
 
 			# парсинг координат из текстовых данных
-			point.POINT.toString().replace(/[\s\[\]]/g,'').split(',')
+			if point?.POINT?
+				point.POINT.toString().replace(/[\s\[\]]/g,'').split(',')
 
 
 
@@ -47,24 +48,20 @@ $ ->
 
 		options: (point) ->
 
-			# ширина балуна
-			balloonMinWidth: 350
-			# высота балуна
-			balloonMinHeight: 200
 			# иконка метки
-			preset: if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
+			preset: $(this).snMapsFn('preset', point)
 			# если пользователь авторизован и данная метка создана им самим
 			# то делаем возможность перетаскивать эту метку
-			draggable: if point.USER_ID?.toString() is window.user?.id?.toString() then on else false
+			draggable: $(this).snMapsFn('draggable', point)
 
 		onBalloonOpen: (placemark) ->
 
 			_this = this
 			# добавляем триггер на открытие балуна
-			placemark.events.add 'balloonopen', (e) ->
+			placemark.events.add 'balloonopen', (event) ->
 				
-				placemark = e.get('target')
-				balloon = e.get('balloon')
+				placemark = event.get('target')
+				balloon = event.get('balloon')
 				map = placemark.getMap()
 				uuid = placemark.properties.get('uuid').toString()
 
@@ -77,100 +74,42 @@ $ ->
 						# берем координаты метки чтобы потом заполнить ими поля широта и долгота
 						res.coordinates = $this.coordinates res.content
 						# увеличиваем размер балуна, чтобы туда все поместилось
-						placemark.options.set 'balloonMinWidth', 500
-						placemark.options.set 'balloonMinHeight', 400
+						$(_this).snMapsFn 'size', placemark, '500x400'
 
 						# берем дату, чтобы подставить ее в datepicker, который будет 
 						# незаполнен значением
-						now = new Date()
-						year = now.getFullYear().toString()
-						if now.getMonth() + 1 < 10 	then month = '0' + (now.getMonth() + 1).toString() 	else month = (now.getMonth() + 1).toString()
-						if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
-						res.date = "#{day}.#{month}.#{year}"
+						res.date = $(_this).snMapsFn 'date'
 
 						# рендерим нужный шаблон и загружаем его в балун
-						placemark.properties.set 'balloonContentHeader',
-							new EJS(url: 'view/balloonHeaderEditor.html', ext: '.html', type: '[', cache: off).render(res)
-						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContentEditor.html', ext: '.html', type: '[', cache: off).render(res)
+						placemark.properties.set 'balloonContentHeader', $(_this).snMapsFn('header', res, 'editor')
+						placemark.properties.set 'balloonContentBody', $(_this).snMapsFn('body', res, 'editor')
 
 						# активируем инпуты с выбором даты через календарь
-						$('#dp1').datepicker()
-						$('#dp2').datepicker()
-						$('#dp3').datepicker()
+						$(_this).snMapsFn 'datepicker'
 
 						# активируем typeahead при заполнении поля исполнитель
-						if res.agents?
-							$('#agent').typeahead
-								# в качестве источника указываем данные которые пришли от сервера
-								source: res.agents
+						$(_this).snMapsFn 'typeahead', res
 
 						# вешаем триггер на кнопку удаления метки
-						$('.mark-delete-link').on 'click', (e) ->
-
-							e.preventDefault()
-							# вызываем модальное окно
-							$('#modal-deletemark').modal()
-							# убираем с кнопок предыдущие триггеры
-							$('.deletemark-delete-link').off 'click'
-							# ставим новый триггер с новыми координатами
-							$('.deletemark-delete-link').on 'click', (e) ->
-
-								e.preventDefault()
-								# если пользователь ответил положительно
-								if $(this).data('answer') is 'yes'
-
-									# делаем запрос к серверу на удаление
-									$(_this).snMapsAjax 'removeMark', uuid, (response) ->
-										if response
-											# при успехе удаляем метку с карты
-											map.geoObjects.remove(placemark)
-										else
-											alert 'К сожалению, не удалось удалить метку'
+						$(_this).snMapsTriggers 'delete', event
 
 						# триггер на сохранение данных внутри метки
-						$('.mark-save-link').on 'click', (e) ->
-							e.preventDefault()
-							# т.к. внутри полей широта и долгота данные могли измениться
-							# то берем их оттуда и устанавливаем для метки эти координаты
-							coordinates = [
-								parseFloat($('#lat').val().replace(",","."))
-								parseFloat($('#lon').val().replace(",","."))
-							]
-							placemark.geometry.setCoordinates coordinates
-
-							# возможно сменился тип объекта и нужно будет сменить иконку
-							placemark.options.set 'preset', if $('.vid_0').hasClass('active') then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
-
-							# отправляем все данные на сервер
-							$(_this).snMapsAjax 'saveMark', uuid, 
-								agent: 			$('#agent').val()
-								info: 			$('#info').val()
-								date1: 			$('#date1').val()
-								date2: 			$('#date2').val()
-								date3: 			$('#date3').val()
-								lat:			coordinates[0]
-								lon:			coordinates[1]
-								vid:			if $('.vid_0').hasClass('active') then 0 else 1
-							, (response) ->
-								if !response
-									alert 'К сожалению, не удалось сохранить метку'
+						$(_this).snMapsTriggers 'save', event
 
 						# триггер на закрытие балуна
 						# все ссылки у которых есть класс .ballon-close 
 						# закрывают балун
-						$('.balloon-close').on 'click', (e) ->
-							e.preventDefault()
-							balloon.close()
-							#placemark.
+						$(_this).snMapsTriggers 'close', event
 
 					else
+
+						#размеры балуна
+						$(_this).snMapsFn 'size', placemark, '350x200'
+						
 						# если пользователь не авторизован или эта метка не его
 						# то рендерим обычный шаблон с информацией и показываем внутри балуна
-						placemark.properties.set 'balloonContentHeader',
-							new EJS(url: 'view/balloonHeader.html', ext: '.html', type: '[', cache: off).render(res)
-						placemark.properties.set 'balloonContentBody',
-							new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: off).render(res)
+						placemark.properties.set 'balloonContentHeader', $(_this).snMapsFn('header', res)
+						placemark.properties.set 'balloonContentBody', $(_this).snMapsFn('body', res)
 
 			# возвращаем объект с меткой
 			placemark
@@ -215,7 +154,11 @@ $ ->
 						# берем новые координаты и отправляем их на сервер				
 						coordinates = placemark.geometry.getCoordinates()
 
+						#отправляем новые координаты на сервер
 						$(_this).snMapsAjax 'dragMark', uuid, coordinates
+
+						# т.к. поменялись координаты, то сменился и адрес - делаем геокодирование
+						$(_this).snMapsFn 'street', ymaps, coordinates
 
 					else
 
