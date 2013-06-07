@@ -63,7 +63,7 @@ $ ->
 								$(_this).snMapsTriggers 'create', event
 
 								# триггер на закрытие балуна
-								$(_this).snMapsTriggers 'close', event
+								$(_this).snMapsTriggers 'close', map.balloon
 
 						else
 							map.balloon.close()
@@ -81,7 +81,7 @@ $ ->
 
 							# геокодирование улицы, на которой расположена метка
 							if !point.STREET? or !point.STREET
-								$(_this).snMapsFn 'street', ymaps, $(_this).snMapsPlacemark('coordinates',point)
+								$(_this).snMapsFn 'street', $(_this).snMapsPlacemark('coordinates',point)
 
 														
 							# создаем метку

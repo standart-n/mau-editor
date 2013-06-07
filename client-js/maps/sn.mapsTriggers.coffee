@@ -10,7 +10,7 @@ $ ->
 			map = placemark.getMap()
 			uuid = placemark.properties.get('uuid').toString()
 
-			if ymaps? and placemark? and uuid?
+			if placemark? and uuid?
 
 				# триггер на сохранение данных внутри метки
 				$('.mark-save-link').on 'click', (e) ->
@@ -20,7 +20,7 @@ $ ->
 					placemark.geometry.setCoordinates $(_this).snMapsFn('coordinates')
 
 					# т.к. поменялись координаты, то сменился и адрес - делаем геокодирование
-					$(_this).snMapsFn 'street', ymaps, $(this).snMapsFn('coordinates')
+					$(_this).snMapsFn 'street', $(this).snMapsFn('coordinates')
 
 
 					# возможно сменился тип объекта и нужно будет сменить иконку
@@ -70,8 +70,7 @@ $ ->
 		create: (event) ->
 
 			_this = this
-			placemark = event.get('target')
-			map = placemark.getMap()
+			map = event.get('target')
 
 			if ymaps? and map?
 
@@ -90,10 +89,7 @@ $ ->
 
 	
 		# триггер внутри балуна на кнопки которые его закрывают
-		close: (event) ->
-
-			_this = this
-			balloon = event.get('balloon')
+		close: (balloon) ->
 
 			if balloon?
 				$('.balloon-close').on 'click', (e) ->

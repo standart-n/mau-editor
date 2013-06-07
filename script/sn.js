@@ -260,7 +260,7 @@ $(function() {
                 $(_this).snMapsFn('datepicker');
                 $(_this).snMapsFn('typeahead', res);
                 $(_this).snMapsTriggers('create', event);
-                return $(_this).snMapsTriggers('close', event);
+                return $(_this).snMapsTriggers('close', map.balloon);
               });
             } else {
               return map.balloon.close();
@@ -275,7 +275,7 @@ $(function() {
             point = points[i];
             if (point.POINT != null) {
               if ((point.STREET == null) || !point.STREET) {
-                $(_this).snMapsFn('street', ymaps, $(_this).snMapsPlacemark('coordinates', point));
+                $(_this).snMapsFn('street', $(_this).snMapsPlacemark('coordinates', point));
               }
               placemarks[i] = $(_this).snMapsPlacemark(ymaps, point);
               _results.push(map.geoObjects.add(placemarks[i]));
@@ -671,10 +671,10 @@ $(function() {
         }
       }
     },
-    street: function(ymaps, coordinates) {
+    street: function(coordinates) {
       var coder;
 
-      if ((ymaps != null) && (coordinates != null)) {
+      if ((typeof ymaps !== "undefined" && ymaps !== null) && (coordinates != null)) {
         coder = ymaps.geocode(coordinates, {
           json: true,
           kind: 'house',
@@ -849,7 +849,7 @@ $(function() {
             $(_this).snMapsFn('typeahead', res);
             $(_this).snMapsTriggers('delete', event);
             $(_this).snMapsTriggers('save', event);
-            return $(_this).snMapsTriggers('close', event);
+            return $(_this).snMapsTriggers('close', balloon);
           } else {
             $(_this).snMapsFn('size', placemark, '350x200');
             placemark.properties.set('balloonContentHeader', $(_this).snMapsFn('header', res));
@@ -888,7 +888,7 @@ $(function() {
             uuid = placemark.properties.get('uuid').toString();
             coordinates = placemark.geometry.getCoordinates();
             $(_this).snMapsAjax('dragMark', uuid, coordinates);
-            return $(_this).snMapsFn('street', ymaps, coordinates);
+            return $(_this).snMapsFn('street', coordinates);
           } else {
             lastCoordinates = placemark.properties.get('lastCoordinates');
             return placemark.geometry.setCoordinates(lastCoordinates);
@@ -921,11 +921,11 @@ $(function() {
       placemark = event.get('target');
       map = placemark.getMap();
       uuid = placemark.properties.get('uuid').toString();
-      if ((typeof ymaps !== "undefined" && ymaps !== null) && (placemark != null) && (uuid != null)) {
+      if ((placemark != null) && (uuid != null)) {
         return $('.mark-save-link').on('click', function(e) {
           e.preventDefault();
           placemark.geometry.setCoordinates($(_this).snMapsFn('coordinates'));
-          $(_this).snMapsFn('street', ymaps, $(this).snMapsFn('coordinates'));
+          $(_this).snMapsFn('street', $(this).snMapsFn('coordinates'));
           placemark.options.set('preset', $(_this).snMapsFn('preset'));
           return $(_this).snMapsAjax('saveMark', uuid, $(_this).snMapsFn('data'), function(res) {
             if (!res) {
@@ -963,15 +963,16 @@ $(function() {
       }
     },
     create: function(event) {
-      var map, placemark, _this;
+      var map, _this;
 
       _this = this;
-      placemark = event.get('target');
-      map = placemark.getMap();
+      map = event.get('target');
       if ((typeof ymaps !== "undefined" && ymaps !== null) && (map != null)) {
         return $('.mark-create-link').on('click', function(e) {
           e.preventDefault();
           return $(_this).snMapsAjax('createMark', $(_this).snMapsFn('data'), function(res) {
+            var placemark;
+
             if (res) {
               placemark = $(_this).snMapsPlacemark(ymaps, res);
               return map.geoObjects.add(placemark);
@@ -982,11 +983,7 @@ $(function() {
         });
       }
     },
-    close: function(event) {
-      var balloon, _this;
-
-      _this = this;
-      balloon = event.get('balloon');
+    close: function(balloon) {
       if (balloon != null) {
         return $('.balloon-close').on('click', function(e) {
           e.preventDefault();

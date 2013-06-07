@@ -5,12 +5,15 @@
 $ ->
 
 	$this =
+		
+		# активация календарей внутри балуна
 		datepicker: () ->
 			$('#dp1').datepicker()
 			$('#dp2').datepicker()
 			$('#dp3').datepicker()
 
 
+		# получить текущую дату
 		date: () ->
 			now = new Date()
 			year = now.getFullYear().toString()
@@ -18,6 +21,7 @@ $ ->
 			if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
 			"#{day}.#{month}.#{year}"
 
+		# получить данные из инпутов балуна
 		data: () ->
 			agent: 			$('#agent').val()
 			info: 			$('#info').val()
@@ -28,6 +32,7 @@ $ ->
 			lon:			$this.lon()
 			vid:			if $('.vid_0').hasClass('active') then 0 else 1
 
+		# получить координаты из инпутов балуна
 		coordinates: () ->
 			[ 
 				$this.lat() 
@@ -40,17 +45,20 @@ $ ->
 		lon: () ->
 			parseFloat($('#lon').val().toString().replace(",","."))
 
+		# получить тип иконки метки
 		preset: (point) ->
 			if point?.VID_ID?
 				if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
 			else
 				if $('.vid_0').hasClass('active') then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
 
+		# проверить можно ли разрешить перетаскивание метки
 		draggable: (point) ->
 			if point?
-				if point.USER_ID?.toString() is window.user?.id?.toString() then on else false
+				if point.USER_ID?.toString() is window.user?.id?.toString() then on else off
 
-		street: (ymaps, coordinates) ->
+		# геокодирование адреса по которому расположена метка
+		street: (coordinates) ->
 			if ymaps? and coordinates?
 				coder = ymaps.geocode coordinates,
 					json: on
@@ -67,6 +75,7 @@ $ ->
 					if pos? and street?
 						$(this).snMapsAjax 'editStreet', street, pos
 
+		# настроить размеры балуна, задаются как 600x480
 		size: (placemark, s) ->
 			if placemark? and s?
 				size = s.toString().split('x')
@@ -74,6 +83,7 @@ $ ->
 					placemark.options.set 'balloonMinWidth', parseInt(size[0])
 					placemark.options.set 'balloonMinHeight', parseInt(size[1])
 
+		# вставить шаблон в заголовок балуна
 		header: (res = {}, type) ->
 			if type?
 				switch type
@@ -85,6 +95,7 @@ $ ->
 				new EJS(url: 'view/balloonHeader.html', ext: '.html', type: '[', cache: off).render(res)
 
 
+		# вставить шаблон в тело балуна
 		body: (res = {}, type) ->
 			if type?
 				switch type
@@ -95,6 +106,7 @@ $ ->
 			else
 				new EJS(url: 'view/balloonContent.html', ext: '.html', type: '[', cache: off).render(res)
 
+		# активировать typeahead
 		typeahead: (res) ->
 			if res.agents?
 				$('#agent').typeahead

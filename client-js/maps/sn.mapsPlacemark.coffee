@@ -99,7 +99,7 @@ $ ->
 						# триггер на закрытие балуна
 						# все ссылки у которых есть класс .ballon-close 
 						# закрывают балун
-						$(_this).snMapsTriggers 'close', event
+						$(_this).snMapsTriggers 'close', balloon
 
 					else
 
@@ -158,7 +158,7 @@ $ ->
 						$(_this).snMapsAjax 'dragMark', uuid, coordinates
 
 						# т.к. поменялись координаты, то сменился и адрес - делаем геокодирование
-						$(_this).snMapsFn 'street', ymaps, coordinates
+						$(_this).snMapsFn 'street', coordinates
 
 					else
 
