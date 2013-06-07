@@ -11,7 +11,7 @@ function __construct() {
 
 public static function getPoints($s="") {
 	$s.="select ";
-	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END ";
+	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END, STREET ";
 	$s.="from VW_BAD_ROADS ";
 	$s.="where status = 0 and PERIOD_END is null";
 	return $s;
@@ -61,7 +61,7 @@ public static function editNewMark($id,$lat,$lon,$s="") {
 
 public static function getPointById($uuid,$s="") {
 	$s.="select ";
-	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END ";
+	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END, STREET ";
 	$s.="from VW_BAD_ROADS ";
 	$s.="where status = 0 and D\$UUID = '".$uuid."'";
 	return $s;
@@ -104,6 +104,12 @@ public static function saveMark($userid,$id,$agent,$info,$lat,$lon,$vid,$s="") {
 
 public static function dragMark($userid,$id,$lat,$lon,$s="") {
 	$s.="update bad_roads set POINT='[".$lat.",".$lon."]' where D\$UUID='".$id."' and USER_ID=".$userid." ";
+	return $s;
+}
+
+public static function editStreet($street,$lat,$lon,$s="") {
+	$s.="update bad_roads set STREET='".$street."' where POINT='[".$lat.",".$lon."]' ";
+	self::$query=$s;
 	return $s;
 }
 

@@ -38,6 +38,9 @@ public static function engine() {
 		case "dragMark":
 			return self::dragMark();
 		break;
+		case "editStreet":
+			return self::editStreet();
+		break;
 	}
 	return false;
 }
@@ -102,6 +105,12 @@ public static function saveMark($j=array()) {
 
 public static function dragMark($j=array()) {
 	$j['res']=editor::dragMark();
+	$j['tm']=time();
+	return $j;
+}
+
+public static function editStreet($j=array()) {
+	$j['res']=editor::editStreet();
 	$j['tm']=time();
 	return $j;
 }

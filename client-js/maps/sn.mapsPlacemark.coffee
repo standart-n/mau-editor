@@ -28,20 +28,15 @@ $ ->
 		coordinates: (point) ->
 
 			# парсинг координат из текстовых данных
-			coords = point.POINT.toString().replace(/[\s\[\]]/g,'')
-			coordinates = [
-				coords.replace(/^(.*)\,(.*)$/, '$1') # ширина
-				coords.replace(/^(.*)\,(.*)$/, '$2') # долгота
-			]
-
-			coordinates
+			point.POINT.toString().replace(/[\s\[\]]/g,'').split(',')
 
 
 
 		properties: (point) ->
 
 			# заголовок подсказки на метке
-			hintContent: if point.PLAN_PERIOD_END? then "до <b>#{point.PLAN_PERIOD_END.toString()}</b>"
+			# hintContent: if point.STREET? and point.STREET then "#{point.STREET}" else "до <b>#{point.PLAN_PERIOD_END.toString()}</b>"
+			hintContent: if point.STREET? and point.STREET then "#{point.STREET}" else null
 			# заголовок балуна
 			#  balloonContentHeader: "<div>#{point.SVID}</div>"
 			balloonContentHeader: "<div></div>"

@@ -136,5 +136,14 @@ public static function dragMark($j=array()) {
 	return false;
 }
 
+public static function editStreet($j=array()) {
+	if ((isset(url::$street)) and (isset(url::$lat)) and (isset(url::$lon))) {
+		if (query(sql::editStreet(url::$street,url::$lat,url::$lon))) {
+			return true;
+		}			
+	}
+	return false;
+}
+
 
 } ?>

@@ -15,6 +15,7 @@ public static $vid;
 public static $lat;
 public static $lon;
 public static $info;
+public static $street;
 public static $callback;
 
 function __construct() {
@@ -65,6 +66,10 @@ function __construct() {
 
 	if (isset($_REQUEST["agent"])) {
 		self::$agent=toWin(trim(strval($_REQUEST["agent"])));
+	}
+
+	if (isset($_REQUEST["street"])) {
+		self::$street=toWin(trim(strval($_REQUEST["street"])));
 	}
 
 	if (isset($_REQUEST["date1"])) {

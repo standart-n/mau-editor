@@ -196,6 +196,27 @@ $ ->
 					console.log XMLHttpRequest, textStatus, error if console?
 
 
+		# геокодирование улицы, на которой находилась данная метка
+		editStreet: (street, coordinates, callback) ->
+
+			if street? and coordinates?
+				$.ajax
+					url: 'index.php'
+					type: 'GET'
+					data:
+						action: 		'editStreet'
+						street:			street
+						lat: 			coordinates[0]
+						lon: 			coordinates[1]
+					dataType: 'json'
+					success: (s) ->
+						console.info s if console?
+						if s.res?
+							callback(s.res) if callback?
+	
+					error: (XMLHttpRequest, textStatus, error) ->
+						console.log XMLHttpRequest, textStatus, error if console?
+
 
 	# инициализация
 	$.fn.snMapsAjax = (sn = {}) ->
