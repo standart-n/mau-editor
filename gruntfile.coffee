@@ -68,6 +68,5 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-recess'	
 	
 	grunt.registerTask 'default', ['recess', 'coffee:sn', 'uglify:sn', 'jade']
-	grunt.registerTask 'bootstrap', ['concat:bootstrap', 'uglify:bootstrap']
-	grunt.registerTask 'css', ['recess:sn']
+	grunt.registerTask 'all', ['default', 'concat:bootstrap', 'uglify:bootstrap']
 	
