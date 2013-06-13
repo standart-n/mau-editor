@@ -1,0 +1,31 @@
+{
+  "name": "mau-editor",
+  "version": "0.0.1",
+  "description": "mauric map editor",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-jade": "~0.7.0",
+    "grunt-recess": "~0.3.3"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/standart-n/mau-editor.git"
+  },
+  "keywords": [
+    "yandex_maps",
+    "mauric",
+    "editor"
+  ],
+  "author": "aleksnick",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "1c617c0e5dfdf7f4a27e5e9ac6bd1a99987dbc74"
+}
