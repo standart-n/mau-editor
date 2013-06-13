@@ -8,10 +8,16 @@ module.exports = (grunt) ->
 
 		jade:
 			index:
-				options: 
+				options:
 					pretty: on
 				src: './jade/index.jade'
 				dest: './index.html'
+
+			test:
+				options:
+					pretty: on
+				src: './jade/test.jade'
+				dest: './test.html'
 			
 			view:
 				options:
@@ -42,6 +48,10 @@ module.exports = (grunt) ->
 				src: ['client-js/main/*', 'client-js/users/*', 'client-js/maps/*', 'client-js/widgets/*']
 				dest: 'script/sn.js'
 
+			test:
+				src: 'test-js/*'
+				dest: 'script/test.js'
+
 		concat:
 			bootstrap:
 				src: 'bootstrap-js/*.js'
@@ -55,9 +65,26 @@ module.exports = (grunt) ->
 				files: 
 					'script/sn.min.js': '<%= coffee.sn.dest %>'
 
+			test:
+				options:
+					report: 'min'
+				files: 
+					'script/test.min.js': '<%= coffee.test.dest %>'
+
 			bootstrap:
 				files: 
 					'script/bootstrap.min.js': '<%= concat.bootstrap.dest %>'
+
+		qunit:
+			test:
+				options:
+					urls: ['http://localhost:8000/test.html']
+
+		connect:
+			test:
+				options:
+					port: 8000
+					base: '.'
 
 
 
@@ -65,8 +92,11 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-concat'
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
 	grunt.loadNpmTasks 'grunt-contrib-jade'
-	grunt.loadNpmTasks 'grunt-recess'	
+	grunt.loadNpmTasks 'grunt-contrib-qunit'
+	grunt.loadNpmTasks 'grunt-contrib-connect'
+	grunt.loadNpmTasks 'grunt-recess'
 	
-	grunt.registerTask 'default', ['recess', 'coffee:sn', 'uglify:sn', 'jade']
+	grunt.registerTask 'default', ['recess', 'coffee:sn', 'uglify:sn', 'jade:index', 'jade:view']
 	grunt.registerTask 'all', ['default', 'concat:bootstrap', 'uglify:bootstrap']
+	grunt.registerTask 'test', ['coffee:test', 'jade:test', 'connect', 'qunit']
 	

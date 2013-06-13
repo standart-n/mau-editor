@@ -10,7 +10,9 @@
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-jade": "~0.7.0",
-    "grunt-recess": "~0.3.3"
+    "grunt-recess": "~0.3.3",
+    "grunt-contrib-connect": "~0.3.0",
+    "grunt-contrib-qunit": "~0.2.2"
   },
   "scripts": {
     "test": "test"
