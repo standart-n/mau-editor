@@ -18,6 +18,82 @@
   <body>
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
+    <div id="wrap" class="hide">
+      <div id="sn"></div>
+      <div id="bar" class="navbar navbar-static-top">
+        <div class="navbar-inner">
+          <div class="container-fluid">
+            <div class="row-fluid">
+              <div class="pull-left"><a href="#" class="brand">Перекопы и объезды							</a><a id="signin-link-phone" href="#" data-toggle="modal" data-target="#modal-signin" class="btn btn-small btn-navbar"> <span class="icon-user"></span></a></div>
+              <ul class="nav pull-right">
+                <li><a href="#" data-toggle="modal" data-target="#modal-signin" class="signin-enter-link"> <i class="icon-user"></i>&nbsp;
+                    Войти</a></li>
+                <li class="hide"><a href="#" class="signin-exit-link"> <i class="icon-off"></i>&nbsp;
+                    Выйти</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="main">
+        <div id="map" class="map-main"></div>
+      </div>
+      <div id="modal-signin" class="modal hide fade">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" class="close">&times;</button>
+          <h3>Доступ к редактированию</h3>
+        </div>
+        <div class="modal-body">
+          <p>
+            <div class="signin-alert-success signin-alert alert alert-success hide">
+              <button type="button" data-dismiss="alert" class="close">&times</button><strong>Поздравляем! </strong>Вы успешно авторизовались
+            </div>
+            <div class="signin-alert-error signin-alert alert alert-error hide">
+              <button type="button" data-dismiss="alert" class="close">&times</button><strong>Ошибка! </strong>Вы указали неверный логин или пароль
+            </div>
+            <form id="signin-form" class="form-horizontal">
+              <div class="control-group">
+                <label for="signin-login" class="control-label">Логин</label>
+                <div class="controls">
+                  <input id="signin-login" type="text" value="" placeholder="Логин">
+                </div>
+              </div>
+              <div class="control-group">
+                <label for="signin-password" class="control-label">Пароль</label>
+                <div class="controls">
+                  <input id="signin-password" type="password" value="" placeholder="Пароль">
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+              </div>
+            </form>
+          </p>
+        </div>
+      </div>
+      <div id="modal-deletemark" class="modal hide fade">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" class="close">&times;</button>
+          <h3>Подтверждение</h3>
+        </div>
+        <div class="modal-body">
+          <p>Вы уверены, что хотите удалить эту метку со всеми ее данными?</p>
+        </div>
+        <div class="modal-footer"><a href="#" data-answer="yes" data-dismiss="modal" class="deletemark-delete-link btn btn-danger">Да, конечно</a><a href="#" data-answer="no" data-dismiss="modal" class="deletemark-delete-link btn">Отмена</a></div>
+      </div>
+      <div id="modal-dragmark" class="modal hide fade">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" class="close">&times;</button>
+          <h3>Подтверждение</h3>
+        </div>
+        <div class="modal-body">
+          <p>Вы действительно хотите перетащить данную метку на новую позицию?</p>
+        </div>
+        <div class="modal-footer"><a href="#" data-answer="yes" data-dismiss="modal" class="dragmark-drag-link btn btn-success">Да, конечно</a><a href="#" data-answer="no" data-dismiss="modal" class="dragmark-drag-link btn">Отмена</a></div>
+      </div>
+    </div>
     <script src="lib/qunit/qunit.js" type="text/javascript"></script>
     <script src="http://api-maps.yandex.ru/2.0/?load=package.full&amp;lang=ru-RU" type="text/javascript"></script>
     <script src="lib/js/jQuery.1.8.3.min.js" type="text/javascript"></script>
@@ -26,5 +102,10 @@
     <script src="script/bootstrap.min.js" type="text/javascript"></script>
     <script src="script/sn.min.js" type="text/javascript"></script>
     <script src="script/test.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(function(){
+       $("#sn").sn();
+      })
+    </script>
   </body>
 </html>

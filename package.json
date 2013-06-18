@@ -11,8 +11,8 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-jade": "~0.7.0",
     "grunt-recess": "~0.3.3",
-    "grunt-contrib-connect": "~0.3.0",
-    "grunt-contrib-qunit": "~0.2.2"
+    "zombie": "~2.0.0-alpha19",
+    "grunt-mocha-test": "~0.4.0"
   },
   "scripts": {
     "test": "test"

@@ -43,12 +43,14 @@ module.exports = (grunt) ->
 				files:
 					'style/style.min.css': './less/bootstrap.less'
 
-		coffee:
+		coffee:			
 			sn:
 				src: ['client-js/main/*', 'client-js/users/*', 'client-js/maps/*', 'client-js/widgets/*']
 				dest: 'script/sn.js'
 
 			test:
+				options:
+					bare: on
 				src: 'test-js/*'
 				dest: 'script/test.js'
 
@@ -75,28 +77,22 @@ module.exports = (grunt) ->
 				files: 
 					'script/bootstrap.min.js': '<%= concat.bootstrap.dest %>'
 
-		qunit:
+
+		mochaTest:
 			test:
 				options:
-					urls: ['http://localhost:8000/test.html']
-
-		connect:
-			test:
-				options:
-					port: 8000
-					base: '.'
-
+					reporter: 'spec'
+				src: 'script/test.js'
 
 
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
 	grunt.loadNpmTasks 'grunt-contrib-concat'
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
 	grunt.loadNpmTasks 'grunt-contrib-jade'
-	grunt.loadNpmTasks 'grunt-contrib-qunit'
-	grunt.loadNpmTasks 'grunt-contrib-connect'
+	grunt.loadNpmTasks 'grunt-mocha-test'
 	grunt.loadNpmTasks 'grunt-recess'
 	
 	grunt.registerTask 'default', ['recess', 'coffee:sn', 'uglify:sn', 'jade:index', 'jade:view']
 	grunt.registerTask 'all', ['default', 'concat:bootstrap', 'uglify:bootstrap']
-	grunt.registerTask 'test', ['coffee:test', 'jade:test', 'connect', 'qunit']
+	grunt.registerTask 'test', ['coffee:test', 'jade:test', 'mochaTest:test']
 	
