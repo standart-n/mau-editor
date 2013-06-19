@@ -78,21 +78,12 @@ module.exports = (grunt) ->
 					'script/bootstrap.min.js': '<%= concat.bootstrap.dest %>'
 
 
-		mochaTest:
-			test:
-				options:
-					reporter: 'spec'
-				src: 'script/test.js'
-
-
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
 	grunt.loadNpmTasks 'grunt-contrib-concat'
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
 	grunt.loadNpmTasks 'grunt-contrib-jade'
-	grunt.loadNpmTasks 'grunt-mocha-test'
 	grunt.loadNpmTasks 'grunt-recess'
 	
 	grunt.registerTask 'default', ['recess', 'coffee:sn', 'uglify:sn', 'jade:index', 'jade:view']
 	grunt.registerTask 'all', ['default', 'concat:bootstrap', 'uglify:bootstrap']
-	grunt.registerTask 'test', ['coffee:test', 'jade:test', 'mochaTest:test']
-	
+	grunt.registerTask 'test', ['jade:test', 'coffee:test']
