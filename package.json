@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "grunt-cli": "~0.1.9",
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-coffee": "~0.7.0",
@@ -13,7 +14,9 @@
     "grunt-recess": "~0.3.3"
   },
   "scripts": {
-    "test": "test"
+    "build": "./node_modules/.bin/grunt",
+    "bootstrap": "./node_modules/.bin/grunt bootstrap",
+    "test": "./node_modules/.bin/grunt test"
   },
   "repository": {
     "type": "git",

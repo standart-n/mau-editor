@@ -45,18 +45,18 @@ module.exports = (grunt) ->
 
 		coffee:			
 			sn:
-				src: ['client-js/main/*', 'client-js/users/*', 'client-js/maps/*', 'client-js/widgets/*']
+				src: ['client/main/*', 'client/users/*', 'client/maps/*', 'client/widgets/*']
 				dest: 'script/sn.js'
 
 			test:
 				options:
 					bare: on
-				src: 'test-js/*'
+				src: 'test/*'
 				dest: 'script/test.js'
 
 		concat:
 			bootstrap:
-				src: 'bootstrap-js/*.js'
+				src: 'bootstrap/*.js'
 				dest: 'script/bootstrap.js'			
 
 
@@ -85,5 +85,6 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-recess'
 	
 	grunt.registerTask 'default', ['recess', 'coffee:sn', 'uglify:sn', 'jade:index', 'jade:view']
-	grunt.registerTask 'all', ['default', 'concat:bootstrap', 'uglify:bootstrap']
+	grunt.registerTask 'all', ['default', 'bootstrap']
+	grunt.registerTask 'bootstrap', ['concat:bootstrap', 'uglify:bootstrap']
 	grunt.registerTask 'test', ['jade:test', 'coffee:test']

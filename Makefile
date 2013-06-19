@@ -2,26 +2,26 @@ DATE = $(shell date +%I:%M%p)
 
 
 build:
-	@echo "\nIf grunt-cli or locally npm-modules hasn't been installed, do make install."
-	@grunt
+	@./node_modules/.bin/grunt
 
+bootstrap:
+	@./node_modules/.bin/grunt bootstrap
 
 install: 
-	@npm install -g grunt-cli
+	@mkdir -p ./script/
+	@mkdir -p ./style/
+	@mkdir -p ./view/
 	@npm install
-	@grunt all
+	@./node_modules/.bin/grunt all
+
+
 
 test:
-	@grunt test
+	@./node_modules/.bin/grunt test
 	
 
 finish:
 	@echo "\nSuccessfully built at ${DATE}."
 
 
-
-#
-# RUN JSHINT & QUNIT TESTS IN PHANTOMJS
-#
-
-.PHONY: clean
+.PHONY: test bootstrap
