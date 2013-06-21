@@ -80,6 +80,14 @@ $ ->
 						# незаполнен значением
 						res.date = $(_this).snMapsFn 'date'
 
+						# # перед созданием метки, нужно обработать поле исполнитель
+						# if res.content.SAGENT? 
+						# 	# нужно убрать все обратные слэши
+						# 	# res.content.SAGENT = res.content.SAGENT.replace('/\0/g', '0').replace('/\(.)/g', '$1')
+						# 	# res.content.SAGENT = res.content.SAGENT.replace('/\/g', '0').replace('/\(.)/g', '$1')
+						# 	res.content.SAGENT = res.content.SAGENT.replace(/\\'/g,'\'').replace(/\"/g,'"').replace(/\\\\/g,'').replace(/\\0/g,'\0')
+
+
 						# рендерим нужный шаблон и загружаем его в балун
 						placemark.properties.set 'balloonContentHeader', $(_this).snMapsFn('header', res, 'editor')
 						placemark.properties.set 'balloonContentBody', $(_this).snMapsFn('body', res, 'editor')
