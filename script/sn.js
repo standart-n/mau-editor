@@ -1024,9 +1024,6 @@
               res.coordinates = $this.coordinates(res.content);
               $(_this).snMapsFn('size', placemark, '500x400');
               res.date = $(_this).snMapsFn('date');
-              if (res.content.SAGENT != null) {
-                res.content.SAGENT = res.content.SAGENT.replace(/\\'/g, '\'').replace(/\"/g, '"').replace(/\\\\/g, '').replace(/\\0/g, '\0');
-              }
               placemark.properties.set('balloonContentHeader', $(_this).snMapsFn('header', res, 'editor'));
               placemark.properties.set('balloonContentBody', $(_this).snMapsFn('body', res, 'editor'));
               $(_this).snMapsFn('datepicker');
