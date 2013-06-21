@@ -36,7 +36,8 @@ public static function getAgents($j=array()) {
 		for ($i=0;$i<sizeof($m);$i++) {
 			if (isset($m[$i]->SAGENT)) {
 				if ($m[$i]->SAGENT!='') {
-					$j[] = toUTF($m[$i]->SAGENT);
+					//$j[] = toUTF($m[$i]->SAGENT);
+					$j[] = preg_replace('/"/','',stripcslashes(toUTF($m[$i]->SAGENT)));
 				}
 			}
 		}
