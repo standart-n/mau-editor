@@ -24,7 +24,7 @@ public static function getBalloonContent($j=array()) {
 
 	if (query(sql::getBalloonContent(url::$uuid),$m)) {
 		foreach ($m[0] as $key => $value) {
-			$j[$key] = toUTF($value);
+			$j[$key] = preg_replace('/"/','',stripcslashes(toUTF($value)));
 		}
 		return $j;
 	}
