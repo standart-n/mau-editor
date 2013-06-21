@@ -60,7 +60,7 @@
         if (typeof console !== "undefined" && console !== null) {
           console.log('autoload...');
         }
-        return $(this).snEvents('#autoload');
+        return $(this).snEvents('#autoload/two/three:anchor');
       }
     };
     return $.fn.sn = function(sn) {
@@ -150,28 +150,23 @@
           $.extend(true, def, options);
           href = def.href;
         }
-        if (href !== '#' && href.match(/#([a-zA-Z0-9\_\-]+)/)) {
-          levels = {
-            one: href.match(/#([a-zA-Z0-9\_\-]+)/, '$2'),
-            two: href.match(/#[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$3'),
-            three: href.match(/#[a-zA-Z0-9\_\-]+\/[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$4'),
-            anchor: href.match(/\:([a-zA-Z0-9\_\-]+)/)
-          };
+        if (href !== '#' && href.match(/#[a-zA-Z0-9\_\-]+/)) {
+          levels = href.match(/[a-zA-Z0-9\_\-]+/g);
           if (typeof console !== "undefined" && console !== null) {
             console.info('url: ' + href);
           }
           if (typeof console !== "undefined" && console !== null) {
             console.info('levels: ', levels);
           }
-          if ((levels.one != null) && levels.one[1] !== 'spoiler') {
-            switch (levels.one[1]) {
+          if ((levels[0] != null) && levels[0] !== 'spoiler') {
+            switch (levels[0]) {
               case 'autoload':
                 $(this).snUsers();
                 $(this).snMaps();
                 break;
               default:
-                if ((levels.two != null) && (levels.three != null)) {
-                  window.sn.part = levels.one[1];
+                if ((levels[1] != null) && (levels[2] != null)) {
+                  window.sn.part = levels[0];
                 }
             }
             return $(this).click(levels);
@@ -418,7 +413,7 @@
         }
         _this = this;
         return ymaps.ready(function() {
-          var map, placemarks;
+          var map, placemarks, uuid;
           map = new ymaps.Map('map', {
             center: [56.840001, 53.239778],
             zoom: 12,
@@ -450,6 +445,7 @@
               }
             }
           });
+          uuid = location.href.match(/[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}/i) || [];
           return $(_this).snMapsAjax('getPoints', function(points) {
             var i, point, _results;
             _results = [];
@@ -460,7 +456,20 @@
                   $(_this).snMapsFn('street', $(_this).snMapsPlacemark('coordinates', point));
                 }
                 placemarks[i] = $(_this).snMapsPlacemark(ymaps, point);
-                _results.push(map.geoObjects.add(placemarks[i]));
+                map.geoObjects.add(placemarks[i]);
+                if (uuid[0] != null) {
+                  if (point.D$UUID === uuid[0]) {
+                    _results.push(map.geoObjects.each(function(mark) {
+                      if (mark.properties.get('uuid') === uuid[0]) {
+                        return mark.balloon.open(map.getCenter());
+                      }
+                    }));
+                  } else {
+                    _results.push(void 0);
+                  }
+                } else {
+                  _results.push(void 0);
+                }
               } else {
                 _results.push(void 0);
               }

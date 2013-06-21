@@ -54,7 +54,7 @@ $ ->
 
 			# отображение начальной страницы по событию #autoload
 			console.log 'autoload...' if console?
-			$(this).snEvents '#autoload'
+			$(this).snEvents '#autoload/two/three:anchor'
 
 
 

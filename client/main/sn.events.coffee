@@ -18,17 +18,11 @@ $ ->
 				$.extend true, def, options
 				href = def.href
 			
-			if href isnt '#' and href.match(/#([a-zA-Z0-9\_\-]+)/)
+			if href isnt '#' and href.match(/#[a-zA-Z0-9\_\-]+/)
 
 				# парсинг адресной строки
 				
-				levels =
-					one: 		href.match /#([a-zA-Z0-9\_\-]+)/, '$2'
-					two: 		href.match /#[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$3'
-					three: 		href.match /#[a-zA-Z0-9\_\-]+\/[a-zA-Z0-9\_\-]+\/([a-zA-Z0-9\_\-]+)/, '$4'
-					anchor: 	href.match /\:([a-zA-Z0-9\_\-]+)/
-
-
+				levels = href.match /[a-zA-Z0-9\_\-]+/g
 
 				# выводим в логи
 
@@ -37,8 +31,8 @@ $ ->
 
 				# роутинг
 
-				if levels.one? and levels.one[1] isnt 'spoiler'
-					switch levels.one[1]
+				if levels[0]? and levels[0] isnt 'spoiler'
+					switch levels[0]
 
 						# при начальной загрузке приложения
 						when 'autoload'
@@ -49,12 +43,12 @@ $ ->
 						else
 							
 							# в других случаях
-							if levels.two? and levels.three?
+							if levels[1]? and levels[2]?
 
 
 								
 								# если нужно загрузить простую текстовую страницу
-								window.sn.part = levels.one[1]
+								window.sn.part = levels[0]
 					
 					$(this).click(levels) # событие click для запуска модулей
 

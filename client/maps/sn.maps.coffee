@@ -4,6 +4,7 @@
 
 $ ->
 
+
 	$this =
 		init: (options = {}) ->
 
@@ -69,6 +70,9 @@ $ ->
 							map.balloon.close()
 
 
+				# если в адресной строке передали uuid то извлекаем его
+				uuid = location.href.match(/[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}/i) || []
+
 
 				# берем с сервера точки и выводим их
 				$(_this).snMapsAjax 'getPoints', (points) ->
@@ -90,6 +94,18 @@ $ ->
 							# добавляем объекты на карты в обход кластеризатора
 							# чтобы была возможность очень просто удалить любую метку
 							map.geoObjects.add(placemarks[i])
+
+
+							# если в адресной строке передавали uuid какойто точки
+							if uuid[0]?
+								# если uuid соответствует той точке, которую сейчас добавили
+								if point.D$UUID is uuid[0]
+									# пробегаемся по всем точкам на карте
+									map.geoObjects.each (mark) ->
+										# находим нужную
+										if mark.properties.get('uuid') is uuid[0]
+											# открываем ее балун по центру карты
+											mark.balloon.open(map.getCenter())
 
 
 
