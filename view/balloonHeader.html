@@ -4,6 +4,4 @@
 [% } else { %]
 Объезд
 [% } %]
-[% if (content.STREET !== null && typeof content.STREET !== "undefined") { %]
-<small class="muted">[%= content.STREET %]</small>
-[% } %]
+[% if (content.STREET !== null && typeof content.STREET !== "undefined") { %]<small class="text-error">[%= content.STREET %]</small>[% } %]
