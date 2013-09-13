@@ -15,11 +15,12 @@ $ ->
 
 		# получить текущую дату
 		date: () ->
-			now = new Date()
-			year = now.getFullYear().toString()
-			if now.getMonth() + 1 < 10 	then month = '0' + (now.getMonth() + 1).toString() 	else month = (now.getMonth() + 1).toString()
-			if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
-			"#{day}.#{month}.#{year}"
+			# now = new Date()
+			# year = now.getFullYear().toString()
+			# if now.getMonth() + 1 < 10 	then month = '0' + (now.getMonth() + 1).toString() 	else month = (now.getMonth() + 1).toString()
+			# if now.getDate() < 10 		then day = '0' + now.getDate().toString() 			else day = now.getDate().toString()
+			# "#{day}.#{month}.#{year}"
+			moment().format('DD.MM.YYYY')
 
 		# получить данные из инпутов балуна
 		data: () ->
@@ -45,12 +46,41 @@ $ ->
 		lon: () ->
 			parseFloat($('#lon').val().toString().replace(",","."))
 
+
+		checkPlanPeriod: (point) ->
+			if point?
+				if point.PLAN_PERIOD_END? and point.PLAN_PERIOD_END.match('[0-9]{2}.[0-9]{2}.[0-9]{4}')
+					dayInSec = 			24 * 60 * 60
+					pointDateInSec = 	moment(point.PLAN_PERIOD_END.toString(),'DD.MM.YYYY').unix()
+					nowDateInSec = 		moment().unix()
+					console.log nowDateInSec, pointDateInSec, dayInSec, (nowDateInSec - pointDateInSec)
+					if (nowDateInSec - pointDateInSec) < dayInSec then true else false
+				else
+					false
+			else
+				false
+
 		# получить тип иконки метки
 		preset: (point) ->
+
+			vid = 0
+
 			if point?.VID_ID?
-				if point.VID_ID is '0' then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
+				vid = if point.VID_ID is '0' then 0 else 1
 			else
-				if $('.vid_0').hasClass('active') then 'twirl#workshopIcon' else 'twirl#turnRightIcon'
+				vid = if $('.vid_0').hasClass('active') then 0 else 1
+
+			if vid is 0
+				if $this.checkPlanPeriod(point)
+					'twirl#workshopIcon' 
+				else
+					'twirl#redDotIcon'
+			else 
+				if $this.checkPlanPeriod(point)
+					'twirl#turnRightIcon'
+				else
+					'twirl#redDotIcon'
+
 
 		# проверить можно ли разрешить перетаскивание метки
 		draggable: (point) ->

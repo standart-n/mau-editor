@@ -7,6 +7,15 @@
 (function() {
   $(function() {
     var $this;
+    if (window.console == null) {
+      window.console = {
+        info: function() {},
+        log: function() {},
+        error: function() {},
+        warn: function() {}
+      };
+    }
+    moment.lang('ru');
     $this = {
       init: function(options) {
         if (options == null) {
@@ -796,20 +805,7 @@
         return $('#dp3').datepicker();
       },
       date: function() {
-        var day, month, now, year;
-        now = new Date();
-        year = now.getFullYear().toString();
-        if (now.getMonth() + 1 < 10) {
-          month = '0' + (now.getMonth() + 1).toString();
-        } else {
-          month = (now.getMonth() + 1).toString();
-        }
-        if (now.getDate() < 10) {
-          day = '0' + now.getDate().toString();
-        } else {
-          day = now.getDate().toString();
-        }
-        return "" + day + "." + month + "." + year;
+        return moment().format('DD.MM.YYYY');
       },
       data: function() {
         return {
@@ -832,18 +828,45 @@
       lon: function() {
         return parseFloat($('#lon').val().toString().replace(",", "."));
       },
-      preset: function(point) {
-        if ((point != null ? point.VID_ID : void 0) != null) {
-          if (point.VID_ID === '0') {
-            return 'twirl#workshopIcon';
+      checkPlanPeriod: function(point) {
+        var dayInSec, nowDateInSec, pointDateInSec;
+        if (point != null) {
+          if ((point.PLAN_PERIOD_END != null) && point.PLAN_PERIOD_END.match('[0-9]{2}.[0-9]{2}.[0-9]{4}')) {
+            dayInSec = 24 * 60 * 60;
+            pointDateInSec = moment(point.PLAN_PERIOD_END.toString(), 'DD.MM.YYYY').unix();
+            nowDateInSec = moment().unix();
+            console.log(nowDateInSec, pointDateInSec, dayInSec, nowDateInSec - pointDateInSec);
+            if ((nowDateInSec - pointDateInSec) < dayInSec) {
+              return true;
+            } else {
+              return false;
+            }
           } else {
-            return 'twirl#turnRightIcon';
+            return false;
           }
         } else {
-          if ($('.vid_0').hasClass('active')) {
+          return false;
+        }
+      },
+      preset: function(point) {
+        var vid;
+        vid = 0;
+        if ((point != null ? point.VID_ID : void 0) != null) {
+          vid = point.VID_ID === '0' ? 0 : 1;
+        } else {
+          vid = $('.vid_0').hasClass('active') ? 0 : 1;
+        }
+        if (vid === 0) {
+          if ($this.checkPlanPeriod(point)) {
             return 'twirl#workshopIcon';
           } else {
+            return 'twirl#redDotIcon';
+          }
+        } else {
+          if ($this.checkPlanPeriod(point)) {
             return 'twirl#turnRightIcon';
+          } else {
+            return 'twirl#redDotIcon';
           }
         }
       },

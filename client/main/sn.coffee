@@ -5,6 +5,18 @@
 ###
 
 $ ->
+
+	if !window.console?
+		window.console = 
+			info: () ->
+			log: () ->
+			error: () ->
+			warn: () ->
+
+
+	moment.lang('ru')
+
+
 	$this =
 		init: (options = {}) ->
 
