@@ -830,17 +830,19 @@
       },
       checkPlanPeriod: function(point) {
         var dayInSec, nowDateInSec, pointDateInSec;
-        if (point != null) {
-          if ((point.PLAN_PERIOD_END != null) && point.PLAN_PERIOD_END.match('[0-9]{2}.[0-9]{2}.[0-9]{4}')) {
-            dayInSec = 24 * 60 * 60;
-            pointDateInSec = moment(point.PLAN_PERIOD_END.toString(), 'DD.MM.YYYY').unix();
-            nowDateInSec = moment().unix();
-            console.log(nowDateInSec, pointDateInSec, dayInSec, nowDateInSec - pointDateInSec);
-            if ((nowDateInSec - pointDateInSec) < dayInSec) {
-              return true;
-            } else {
-              return false;
-            }
+        if (point == null) {
+          point = {};
+        }
+        if (point.PLAN_PERIOD_END == null) {
+          point.PLAN_PERIOD_END = $('#date2').val();
+        }
+        if ((point.PLAN_PERIOD_END != null) && point.PLAN_PERIOD_END.match('[0-9]{2}.[0-9]{2}.[0-9]{4}')) {
+          dayInSec = 24 * 60 * 60;
+          pointDateInSec = moment(point.PLAN_PERIOD_END.toString(), 'DD.MM.YYYY').unix();
+          nowDateInSec = moment().unix();
+          console.log(nowDateInSec, pointDateInSec, dayInSec, nowDateInSec - pointDateInSec);
+          if ((nowDateInSec - pointDateInSec) < dayInSec) {
+            return true;
           } else {
             return false;
           }
@@ -850,8 +852,11 @@
       },
       preset: function(point) {
         var vid;
+        if (point == null) {
+          point = {};
+        }
         vid = 0;
-        if ((point != null ? point.VID_ID : void 0) != null) {
+        if (point.VID_ID != null) {
           vid = point.VID_ID === '0' ? 0 : 1;
         } else {
           vid = $('.vid_0').hasClass('active') ? 0 : 1;

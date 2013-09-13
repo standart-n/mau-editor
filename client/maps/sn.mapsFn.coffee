@@ -47,25 +47,24 @@ $ ->
 			parseFloat($('#lon').val().toString().replace(",","."))
 
 
-		checkPlanPeriod: (point) ->
-			if point?
-				if point.PLAN_PERIOD_END? and point.PLAN_PERIOD_END.match('[0-9]{2}.[0-9]{2}.[0-9]{4}')
-					dayInSec = 			24 * 60 * 60
-					pointDateInSec = 	moment(point.PLAN_PERIOD_END.toString(),'DD.MM.YYYY').unix()
-					nowDateInSec = 		moment().unix()
-					console.log nowDateInSec, pointDateInSec, dayInSec, (nowDateInSec - pointDateInSec)
-					if (nowDateInSec - pointDateInSec) < dayInSec then true else false
-				else
-					false
+		checkPlanPeriod: (point = {}) ->
+			point.PLAN_PERIOD_END ?= $('#date2').val()
+
+			if point.PLAN_PERIOD_END? and point.PLAN_PERIOD_END.match('[0-9]{2}.[0-9]{2}.[0-9]{4}')
+				dayInSec = 			24 * 60 * 60
+				pointDateInSec = 	moment(point.PLAN_PERIOD_END.toString(),'DD.MM.YYYY').unix()
+				nowDateInSec = 		moment().unix()
+				console.log nowDateInSec, pointDateInSec, dayInSec, (nowDateInSec - pointDateInSec)
+				if (nowDateInSec - pointDateInSec) < dayInSec then true else false
 			else
 				false
 
 		# получить тип иконки метки
-		preset: (point) ->
+		preset: (point = {}) ->
 
 			vid = 0
 
-			if point?.VID_ID?
+			if point.VID_ID?
 				vid = if point.VID_ID is '0' then 0 else 1
 			else
 				vid = if $('.vid_0').hasClass('active') then 0 else 1
