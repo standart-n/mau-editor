@@ -13,7 +13,8 @@ public static function getPoints($s="") {
 	$s.="select ";
 	$s.="POINT, D\$UUID, USER_ID, VID_ID, SVID, PLAN_PERIOD_END, STREET ";
 	$s.="from VW_BAD_ROADS ";
-	$s.="where status = 0 and PERIOD_END is null";
+	$s.="where (status = 0) and (PERIOD_END is null) and (PLAN_PERIOD_END >= CURRENT_TIMESTAMP - 90)";
+	//$s.="where status = 0 and PERIOD_END is null";
 	return $s;
 }
 
